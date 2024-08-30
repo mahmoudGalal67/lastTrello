@@ -124,7 +124,11 @@ function MyVerticallyCenteredModal(props) {
     try {
       await api.post("workspaces/remove-user-from-workspace", {
         headers: { Authorization: `Bearer ${cookies}` },
-        data: { user_id: selectedUsers, workspace_id: workspaceId },
+
+        data: {
+          user_id: Number(selectedUsers),
+          workspace_id: Number(workspaceId),
+        },
       });
 
       setWorkspaceUsers(

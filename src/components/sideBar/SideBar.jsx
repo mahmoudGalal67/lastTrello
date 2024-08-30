@@ -4,6 +4,11 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 
 import Cookies from "js-cookie";
 
+import group from "../../../public/group.svg";
+import table from "../../../public/table.svg";
+import date from "../../../public/date.svg";
+import removedUsers from "../../../public/removedUsers.svg";
+
 import "./SideBar.css";
 import { Link, useParams } from "react-router-dom";
 import api from "../../apiAuth/auth";
@@ -18,11 +23,11 @@ function SideBar({ show, setShow }) {
   const [showUsers, setShowUsers] = useState(false); // State to control user list visibility
   const [users, setUsers] = useState([]);
 
-  const { workspaceId } = useParams();
+  const { workspaceId, boardId } = useParams();
 
   const cookies = Cookies.get("token");
   useEffect(() => {
-    if (workspaceId) {
+    if (workspaceId && !boardId) {
       const getWorkSpace = async () => {
         try {
           const { data } = await api({
@@ -31,6 +36,7 @@ function SideBar({ show, setShow }) {
             headers: { Authorization: `Bearer ${cookies}` },
           });
           setworkSpace(data.result);
+          setUsers(data.result.users);
           setLoading(false);
         } catch (err) {
           setLoading(false);
@@ -38,29 +44,28 @@ function SideBar({ show, setShow }) {
         }
       };
       getWorkSpace();
-    } else {
-      setLoading(false);
     }
-  }, [workspaceId]);
-
-  const handleShowUsers = () => {
-    setShowUsers(!showUsers);
-    if (!showUsers) {
-      // Fetch users only if not already fetched
-      const fetchUsers = async () => {
+    if (boardId) {
+      const getBoarrdUsers = async () => {
         try {
           const { data } = await api({
-            url: `workspaces/get-workspace/${workspaceId}`,
+            url: `boards/get-board/56`,
+            // Authorization: `Bearer ${cookies?.token}`,
             headers: { Authorization: `Bearer ${cookies}` },
           });
-          setUsers(data.result.users);
+          setUsers(data.data.users);
+          setLoading(false);
+          console.log(data);
         } catch (err) {
+          setLoading(false);
           console.log(err);
         }
       };
-      fetchUsers();
+      getBoarrdUsers();
+    } else {
+      setLoading(false);
     }
-  };
+  }, [boardId]);
 
   if (loading) {
     return (
@@ -71,6 +76,8 @@ function SideBar({ show, setShow }) {
       </div>
     );
   }
+
+  console.log(users);
 
   return (
     <>
@@ -89,11 +96,22 @@ function SideBar({ show, setShow }) {
           )}
         </Offcanvas.Header>
         <Offcanvas.Body>
-          <a href="#" className="board-item" onClick={handleShowUsers}>
-            <span>Members</span>
-          </a>
+          {workspaceId && (
+            <a
+              href="#"
+              className="board-item"
+              onClick={(e) => {
+                e.preventDefault();
+                setShowUsers((prev) => !prev);
+              }}
+            >
+              <img src={group} alt="" />
+
+              <span>Members</span>
+            </a>
+          )}
           {showUsers && (
-            <div>
+            <div className="users-list">
               {users.length > 0 ? (
                 users.map((user) => (
                   <div key={user.user_id} className="board-item">
@@ -108,10 +126,16 @@ function SideBar({ show, setShow }) {
             </div>
           )}
           <a href="#" className="board-item">
+            <img src={table} alt="" />
             <span>Table</span>
           </a>
           <a href="#" className="board-item">
+            <img src={date} alt="" />
             <span>Calender</span>
+          </a>
+          <a href="#" className="board-item">
+            <img src={removedUsers} alt="" />
+            <span>Archive</span>
           </a>
           {workSpace && <h2>Your Boards</h2>}
           {workSpace &&

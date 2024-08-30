@@ -2,6 +2,7 @@
   width: 280px !important;
   top: 59px !important;
   z-index: 100 !important;
+  opacity: 0.85;
 }
 
 .offcanvas-body {
@@ -34,6 +35,11 @@ button.sideNav-link {
 
 .fade.offcanvas-backdrop {
   display: none;
+}
+
+.offcanvas-body .board-item .board-item {
+  padding: 0 8px;
+  color: white;
 }
 
 button.sideNav-link:hover {
@@ -90,8 +96,14 @@ button.sideNav-link > img {
   gap: 15px;
   color: white;
   margin: 8px;
+  margin-right: 0;
   width: 100%;
   position: relative;
+}
+.offcanvas-body .users-list {
+  padding: 12px 4px;
+  background-color: #3e99d188;
+  border-radius: 12px;
 }
 
 .offcanvas-body .board-item::after {

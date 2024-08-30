@@ -228,7 +228,7 @@ function NavBar({ workSpaces }) {
                     key={user.id}
                     onClick={() => handleUserClick(user.id)}
                   >
-                    {user.name}
+                    {user.email}
                   </NavDropdown.Item>
                 ))}
               </NavDropdown>
