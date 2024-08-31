@@ -2,7 +2,6 @@
   width: 280px !important;
   top: 59px !important;
   z-index: 100 !important;
-  opacity: 0.85;
 }
 
 .offcanvas-body {
@@ -13,7 +12,7 @@
   width: 15px;
   height: 100vh;
   position: fixed;
-  top: 40px;
+  top: 59px;
   background-color: #335164;
   z-index: 10000;
 }

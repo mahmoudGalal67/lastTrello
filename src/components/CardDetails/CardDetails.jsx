@@ -490,7 +490,7 @@ function CardDetails({
                         value={cardDetails.description}
                         onChange={(e) => updateDetails("description", e)}
                       />
-                      <div className="wrapper">
+                      <div className="wrapper" style={{ margin: "16px 0" }}>
                         <button type="submit" className="save">
                           Save
                         </button>
@@ -583,6 +583,17 @@ function CardDetails({
                       ></input>
                     </div>
                   ))}
+                </div>
+                <div style={{ margin: "25px" }}>
+                  {cardDetails.photo && (
+                    <div className="cover-image">
+                      <ModalImage
+                        small={`https://back.alyoumsa.com/public/${cardDetails.photo}`}
+                        large={`https://back.alyoumsa.com/public/${cardDetails.photo}`}
+                        alt="cover Image"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
