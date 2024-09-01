@@ -87,6 +87,7 @@ function CardDetails({
 
   const [newPosotion, setnewPosotion] = useState(1);
 
+  const [showdetails, setshowdetails] = useState(false);
   const [loading, setLoading] = useState(false);
   const [editText, seteditText] = useState(false);
   const [addItems, setaddItems] = useState({
@@ -132,7 +133,7 @@ function CardDetails({
         },
         data: { the_list_id: activeMovinglist, position: newPosotion },
       });
-      window.location.reload();
+      // window.location.reload();
     } catch (err) {
       console.log(err);
     }
@@ -388,7 +389,6 @@ function CardDetails({
       </div>
     );
   }
-
   return (
     <div>
       {" "}
@@ -523,6 +523,28 @@ function CardDetails({
                   )}
                 </form>
               </div>
+              <div
+                className="details"
+                onClick={() => setshowdetails((prev) => !prev)}
+              >
+                {showdetails ? "Hide" : "Show"} Details
+              </div>
+              {showdetails && (
+                <div className="details-wrapper">
+                  {cardDetails.card_details.map((item) => (
+                    <div className="wrapper">
+                      <div className="user-info">
+                        {item.user_name.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="info">
+                        <span className="user-name">{item.user_name}</span>
+                        <span>{item.description}</span>
+                        <p>{item.created_at}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
               <div className="comments">
                 {!addItems.comment ? (
                   <input

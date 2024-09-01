@@ -55,6 +55,34 @@ function Archeives() {
     }
   }, [show]);
 
+  const handleArchivedUser = async (id, type) => {
+    if (type == "restore") {
+      try {
+        await api({
+          url: `boards/restore-archived-card/${id}`,
+          method: "POST",
+          headers: { Authorization: `Bearer ${cookies}` },
+        });
+        setarcheivedCard(archeivedCard.filter((card) => card.id !== id));
+        alert("Card successfully restore to the board");
+      } catch (err) {
+        console.error("API error:", err);
+      }
+    } else {
+      try {
+        await api({
+          url: `boards/delete-archived-card/${id}`,
+          method: "POST",
+          headers: { Authorization: `Bearer ${cookies}` },
+        });
+        setarcheivedCard(archeivedCard.filter((card) => card.id !== id));
+        alert("Card successfully deleted from the board permanently");
+      } catch (err) {
+        console.error("API error:", err);
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="w-100 h-100 d-flex justify-content-center align-items-center position-fixed top-0 left-0">
@@ -67,7 +95,7 @@ function Archeives() {
 
   return (
     <>
-      <NavBar setShow={setShow}   />
+      <NavBar setShow={setShow} />
       <SideBar show={show} setShow={setShow} />
 
       <div style={{ overflowX: "scroll", minHeight: "100vh" }}>
@@ -96,18 +124,22 @@ function Archeives() {
                           marginInline: "5px",
                           width: "25px",
                           height: "25px",
+                          cursor: "pointer",
                         }}
                         src={deletePer}
                         alt=""
+                        onClick={() => handleArchivedUser(card.id, "delete")}
                       />
                       <img
                         style={{
                           marginInline: "5px",
                           width: "25px",
                           height: "25px",
+                          cursor: "pointer",
                         }}
                         src={restore}
                         alt=""
+                        onClick={() => handleArchivedUser(card.id, "restore")}
                       />
                     </td>
                   </tr>

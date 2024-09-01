@@ -19,7 +19,6 @@ function NavBar({ workSpaces, setShow }) {
   const { user, dispatch } = useContext(AuthContext);
   const workspaceTitle = useRef(null);
   const boardTitle = useRef(null);
-  const [selectedUsers, setSelectedUsers] = useState([]);
   const [assignedUsers, setAssignedUsers] = useState([]);
   const navigate = useNavigate();
   const [shouldFetchAssignedUsers, setShouldFetchAssignedUsers] =
@@ -277,12 +276,26 @@ function NavBar({ workSpaces, setShow }) {
             )}
           </Nav>
           <Form className="d-flex">
-            <Form.Control
+            <form
               type="search"
               placeholder="Search"
               className="me-2"
               aria-label="Search"
-            />
+              onClick={(e) => {
+                setShow(false);
+              }}
+            >
+              <input
+                placeholder="Search"
+                aria-label="Search"
+                type="search"
+                class="me-2 form-control"
+                onClick={(e) => {
+                  e.target.focus();
+                }}
+                autoFocus
+              ></input>
+            </form>
             {user ? (
               <Dropdown align="end">
                 <Dropdown.Toggle

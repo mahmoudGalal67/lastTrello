@@ -12,7 +12,7 @@ import "./list.css";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 
-function List({ list, setboard, boardId, board }) {
+function List({ list, setboard, boardId, board, setShow }) {
   const [showCardList, setshowCardList] = useState(false);
   const [error, seterror] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -188,13 +188,20 @@ function List({ list, setboard, boardId, board }) {
             listId={list.list_id}
             onCardDelete={handleCardDelete}
             board={board}
+            setShow={setShow}
           />
         ))}
       </div>
       <Dropdown className="addList addListCard">
         <Dropdown.Toggle className="addList addListCard" id="dropdown-basic">
           <img src="/plus.svg" alt="" />
-          <button type="text" onClick={() => setshowCardList(true)}>
+          <button
+            type="text"
+            onClick={() => {
+              setshowCardList(true);
+              setShow(false);
+            }}
+          >
             Add a card
           </button>
         </Dropdown.Toggle>
@@ -209,7 +216,11 @@ function List({ list, setboard, boardId, board }) {
               autoFocus
             />
             <div>
-              <Button type="submit" variant="primary">
+              <Button
+                type="submit"
+                variant="primary"
+                onClick={() => seterror(null)}
+              >
                 Add card
               </Button>
             </div>

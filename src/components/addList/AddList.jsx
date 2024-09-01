@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 import api from "../../apiAuth/auth";
 import { Dropdown } from "react-bootstrap";
 
-function addList({ boardId, setboard }) {
+function addList({ boardId, setboard, setShow }) {
   const listTitle = useRef(null);
   const [error, seterror] = useState(null);
 
@@ -47,7 +47,9 @@ function addList({ boardId, setboard }) {
       <Dropdown className="addList ">
         <Dropdown.Toggle className="addList " id="dropdown-basic">
           <img src="/plus.svg" alt="" />
-          <button type="text">Add another list</button>
+          <button onClick={() => setShow(false)} type="text">
+            Add another list
+          </button>
         </Dropdown.Toggle>
 
         <Dropdown.Menu className="addListForm addListCard">
@@ -60,7 +62,11 @@ function addList({ boardId, setboard }) {
               autoFocus
             />
             <div>
-              <Button type="submit" variant="primary">
+              <Button
+                type="submit"
+                variant="primary"
+                onClick={() => seterror(null)}
+              >
                 Add list
               </Button>
             </div>

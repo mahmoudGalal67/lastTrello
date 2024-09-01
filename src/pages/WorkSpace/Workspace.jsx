@@ -122,14 +122,21 @@ function MyVerticallyCenteredModal(props) {
     }
 
     try {
-      await api.post("workspaces/remove-user-from-workspace", {
-        headers: { Authorization: `Bearer ${cookies}` },
+      await api.post(
+        "workspaces/remove-user-from-workspace",
+        // {
+        //   headers: { Authorization: `Bearer ${cookies}` },
+        // },
 
-        data: {
+        // { user_id: Number(selectedUsers), wsporkace_id: Number(workspaceId) }
+        {
           user_id: Number(selectedUsers),
           workspace_id: Number(workspaceId),
         },
-      });
+        {
+          headers: { Authorization: `Bearer ${cookies}` },
+        }
+      );
 
       setWorkspaceUsers(
         workspaceUsers.filter((user) => user.user_id !== selectedUsers)
@@ -310,7 +317,7 @@ function Workspace() {
           </div>
           <div className="body ">
             <h2>Boards</h2>
-            <div className="filters">
+            {/* <div className="filters">
               <div className="left">
                 <div className="item">
                   <label htmlFor="">Sort by</label>
@@ -338,7 +345,7 @@ function Workspace() {
                   <Form.Control size="md" type="text" placeholder="Search" />
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="views">
               <div className="workspace-item">
                 <div className="wrapper">

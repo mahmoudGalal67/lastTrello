@@ -5,12 +5,15 @@ import api from "../../apiAuth/auth";
 
 import Cookies from "js-cookie";
 
-function Card({ card, onCardDelete, listId, board }) {
+function Card({ card, onCardDelete, listId, board, setShow }) {
   const [open, setOpen] = useState(false);
 
   const cookies = Cookies.get("token");
 
-  const onOpenModal = () => setOpen(true);
+  const onOpenModal = () => {
+    setOpen(true);
+    setShow(false);
+  };
   const onCloseModal = () => setOpen(false);
 
   const handleDeleteCard = (id) => {

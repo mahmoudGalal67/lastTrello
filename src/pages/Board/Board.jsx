@@ -82,10 +82,15 @@ function Board() {
               boardId={Number(boardId)}
               setboard={setboard}
               board={board}
+              setShow={setShow}
             />
           ))}
 
-          <AddList boardId={board.board_id} setboard={setboard} />
+          <AddList
+            setShow={setShow}
+            boardId={board.board_id}
+            setboard={setboard}
+          />
         </div>
       </div>
     </div>
