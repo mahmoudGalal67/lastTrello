@@ -13,7 +13,7 @@ import "./navbar.css";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useNavigate } from "react-router-dom";
 
-function NavBar({ workSpaces }) {
+function NavBar({ workSpaces, setShow }) {
   const [error, setError] = useState(null);
   const [users, setUsers] = useState([]);
   const { user, dispatch } = useContext(AuthContext);
@@ -177,7 +177,6 @@ function NavBar({ workSpaces }) {
       setError(err.response?.data?.message || "Failed to log out.");
     }
   };
-
   return (
     <Navbar expand="lg">
       <Container>
@@ -237,12 +236,18 @@ function NavBar({ workSpaces }) {
                 title="Create Workspace"
                 id="navbarScrollingDropdown"
                 className="create"
+                onClick={() => setShow(false)}
               >
                 <form className="container" onSubmit={addWorkspace}>
                   <h2>Workspace</h2>
                   <div className="input-wrapper">
                     <label htmlFor="">Workspace title *</label>
-                    <input ref={workspaceTitle} type="text" required />
+                    <input
+                      ref={workspaceTitle}
+                      type="text"
+                      required
+                      autoFocus
+                    />
                   </div>
                   <Button type="submit" variant="primary">
                     Create Workspace
@@ -255,12 +260,13 @@ function NavBar({ workSpaces }) {
                 title="Create Board"
                 id="navbarScrollingDropdown"
                 className="create"
+                onClick={() => setShow(false)}
               >
                 <form className="container" onSubmit={addBoard}>
                   <h2>Board</h2>
                   <div className="input-wrapper">
                     <label htmlFor="">Board title *</label>
-                    <input ref={boardTitle} type="text" required />
+                    <input ref={boardTitle} type="text" required autoFocus />
                   </div>
                   <Button type="submit" variant="primary">
                     Create Board

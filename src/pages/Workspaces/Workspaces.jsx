@@ -243,7 +243,7 @@ function Workspace() {
 
   return (
     <div className="home">
-      <Navbar workSpaces={workSpaces} />
+      <Navbar workSpaces={workSpaces} setShow={setShow} />
       <SideBar show={show} setShow={setShow} />
       <div className="views">
         {workSpaces.map((workspace) => (

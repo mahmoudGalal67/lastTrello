@@ -68,7 +68,7 @@ function Board() {
         backgroundSize: "cover",
       }}
     >
-      <Navbar />
+      <Navbar setShow={setShow} />
       <SideBar show={show} setShow={setShow} />
       <div className="wrapper views">
         <div className="board-options">

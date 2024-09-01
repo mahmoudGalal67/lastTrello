@@ -67,7 +67,7 @@ function Archeives() {
 
   return (
     <>
-      <NavBar />
+      <NavBar setShow={setShow}   />
       <SideBar show={show} setShow={setShow} />
 
       <div style={{ overflowX: "scroll", minHeight: "100vh" }}>
@@ -88,20 +88,7 @@ function Archeives() {
                   <tr key={i}>
                     <td>{i}</td>
                     <td>{card.text}</td>
-                    <td>
-                      {timeAgo.format(new Date() - 2 * 60 * 1000)}
-                      {timeAgo.format(
-                        (new Date().getTime() -
-                          new Date(card.created_at).getTime()) /
-                          (60 * 60 * 1000)
-                      )}
-                      {console.log(
-                        (new Date().getTime() -
-                          new Date(card.created_at).getTime()) /
-                          (60 * 60 * 1000)
-                      )}
-                      {console.log(new Date() - 2 * 60 * 1000)}
-                    </td>
+                    <td>{new Date(card.created_at).toLocaleString()}</td>
                     <td>{card.user_name}</td>
                     <td>
                       <img

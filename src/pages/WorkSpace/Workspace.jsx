@@ -260,10 +260,11 @@ function Workspace() {
       </div>
     );
   }
+  console.log(show);
 
   return (
     <>
-      <NavBar />
+      <NavBar setShow={setShow} />
       <SideBar workSpace={workSpace} show={show} setShow={setShow} />
 
       <div className="views">
