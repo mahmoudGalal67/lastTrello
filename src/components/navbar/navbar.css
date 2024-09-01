@@ -18,7 +18,7 @@ nav input[type="search"] {
 }
 
 .create .dropdown-toggle {
-  background-color: #0b5ed7;
+  background-color: #499497;
   color: white;
   border-radius: 8px;
 }
@@ -65,7 +65,7 @@ nav .user-name {
   width: 40px;
   height: 40px;
   color: white;
-  background-color: #0b5ed7;
+  background-color: #499497;
   border-radius: 50%;
   display: flex;
   align-items: center;

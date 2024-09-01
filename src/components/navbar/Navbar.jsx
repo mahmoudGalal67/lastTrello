@@ -185,7 +185,6 @@ function NavBar({ workSpaces }) {
           <img
             src="/logo.gif"
             style={{
-              backgroundColor: "#0B5ED7",
               width: "80px",
               height: "30px",
               objectFit: "contain",

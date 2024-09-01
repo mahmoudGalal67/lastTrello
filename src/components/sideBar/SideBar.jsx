@@ -27,7 +27,7 @@ function SideBar({ show, setShow }) {
 
   const cookies = Cookies.get("token");
   useEffect(() => {
-    if (workspaceId && !boardId) {
+    if (workspaceId) {
       const getWorkSpace = async () => {
         try {
           const { data } = await api({
@@ -36,7 +36,9 @@ function SideBar({ show, setShow }) {
             headers: { Authorization: `Bearer ${cookies}` },
           });
           setworkSpace(data.result);
-          setUsers(data.result.users);
+          if (workspaceId && !boardId) {
+            setUsers(data.result.users);
+          }
           setLoading(false);
         } catch (err) {
           setLoading(false);
@@ -55,7 +57,6 @@ function SideBar({ show, setShow }) {
           });
           setUsers(data.data.users);
           setLoading(false);
-          console.log(data);
         } catch (err) {
           setLoading(false);
           console.log(err);
@@ -77,8 +78,6 @@ function SideBar({ show, setShow }) {
     );
   }
 
-  console.log(users);
-
   return (
     <>
       <Button className="sideNav-link" variant="primary" onClick={handleShow}>
@@ -88,11 +87,23 @@ function SideBar({ show, setShow }) {
       <div className="side-bar"></div>
       <Offcanvas show={show} onHide={handleClose}>
         <Offcanvas.Header closeButton>
-          {workSpace && (
+          {workSpace ? (
             <Offcanvas.Title>
               <img src="/photo-1675981004510-4ec798f42006.jpg" alt="" />
               {workSpace.workspace_name}
             </Offcanvas.Title>
+          ) : (
+            <img
+              src="/logo.gif"
+              style={{
+                width: "80px",
+                height: "30px",
+                objectFit: "contain",
+                borderRadius: "5px",
+                marginLeft: "15px",
+              }}
+              alt=""
+            />
           )}
         </Offcanvas.Header>
         <Offcanvas.Body>
@@ -133,10 +144,12 @@ function SideBar({ show, setShow }) {
             <img src={date} alt="" />
             <span>Calender</span>
           </a>
-          <a href="#" className="board-item">
-            <img src={removedUsers} alt="" />
-            <span>Archive</span>
-          </a>
+          {workspaceId && boardId && (
+            <Link to={`/archeivedCards/${boardId}`} className="board-item">
+              <img src={removedUsers} alt="" />
+              <span>Archive</span>
+            </Link>
+          )}
           {workSpace && <h2>Your Boards</h2>}
           {workSpace &&
             workSpace.boards_of_the_workspace.map((board) => (
@@ -144,7 +157,6 @@ function SideBar({ show, setShow }) {
                 key={board.board_id}
                 to={`/board/${workSpace.workspace_id}/${board.board_id}`}
                 className="board-item"
-                onClick={handleClose}
               >
                 <img
                   src={

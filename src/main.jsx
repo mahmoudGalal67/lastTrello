@@ -13,6 +13,7 @@ import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 
 import { AuthContextProvider } from "./components/context/Auth.jsx";
+import Archeives from "./pages/archives/Archeives.jsx";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+  },
+  {
+    path: "/archeivedCards/:boardID",
+    element: <Archeives />,
   },
 ]);
 

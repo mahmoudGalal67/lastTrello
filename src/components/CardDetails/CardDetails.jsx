@@ -201,6 +201,7 @@ function CardDetails({
       updated_at,
       created_at,
       id,
+      card_details,
       ...other
     } = cardDetails;
     setcardDetails((prev) => {
@@ -244,6 +245,7 @@ function CardDetails({
       updated_at,
       created_at,
       id,
+      card_details,
       ...other
     } = cardDetails;
     setcardDetails((prev) => {
@@ -277,12 +279,13 @@ function CardDetails({
       updated_at,
       created_at,
       id,
+      card_details,
       ...other
     } = cardDetails;
     setcardDetails((prev) => {
       return {
         ...prev,
-        end_time: deleteColor ? "" : e.target.value,
+        color: deleteColor ? "" : e.target.value,
       };
     });
     try {
@@ -294,7 +297,7 @@ function CardDetails({
           photo: other.photo && other.photo.replace("/storage/", ""),
           card_id: cardDetails.id,
           the_list_id: listId,
-          end_time: deleteColor ? "" : e.target.value,
+          color: deleteColor ? "" : e.target.value,
         },
         method: "post",
       });
@@ -313,6 +316,7 @@ function CardDetails({
       updated_at,
       created_at,
       id,
+      card_details,
       ...other
     } = cardDetails;
 
@@ -390,11 +394,11 @@ function CardDetails({
       {" "}
       <Modal classNames="card-modal" open={open} onClose={onCloseModal} center>
         <div className="modal-body">
-          {cardDetails.end_time && (
+          {cardDetails.color && (
             <div
               className="cover-image"
               style={{
-                background: cardDetails.end_time,
+                background: cardDetails.color,
               }}
             ></div>
           )}
@@ -648,12 +652,12 @@ function CardDetails({
                       <input
                         type="color"
                         className="color"
-                        value={cardDetails.end_time}
+                        value={cardDetails.color}
                         onChange={updateCoverColor}
                       />
                       {/* <button className="btn btn-info">Update Cover</button> */}
 
-                      {cardDetails.end_time && (
+                      {cardDetails.color && (
                         <button
                           className="btn btn-danger"
                           onClick={(e) => updateCoverColor(e, true)}

@@ -38,11 +38,11 @@ function Card({ card, onCardDelete, listId, board }) {
   return (
     <>
       <div className="item" onClick={onOpenModal}>
-        {cardDetails.end_time && (
+        {cardDetails.color && (
           <div
             className="cover-image"
             style={{
-              backgroundColor: cardDetails.end_time,
+              backgroundColor: cardDetails.color,
             }}
           ></div>
         )}
