@@ -47,11 +47,12 @@ function SideBar({ show, setShow }) {
       };
       getWorkSpace();
     }
+
     if (boardId) {
       const getBoarrdUsers = async () => {
         try {
           const { data } = await api({
-            url: `boards/get-board/56`,
+            url: `boards/get-board/${boardId}`,
             // Authorization: `Bearer ${cookies?.token}`,
             headers: { Authorization: `Bearer ${cookies}` },
           });

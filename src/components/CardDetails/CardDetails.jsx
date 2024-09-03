@@ -272,7 +272,16 @@ function CardDetails({
       console.log(err);
     }
   };
-  const updateCoverColor = async (e, deleteColor) => {
+  const updateCoverColor = (e, deleteColor) => {
+    setcardDetails((prev) => {
+      return {
+        ...prev,
+        color: deleteColor ? "" : e.target.value,
+      };
+    });
+  };
+
+  const handleChangeColorRequest = async (e, deleteColor) => {
     const {
       user_name,
       comments,
@@ -283,12 +292,6 @@ function CardDetails({
       card_details,
       ...other
     } = cardDetails;
-    setcardDetails((prev) => {
-      return {
-        ...prev,
-        color: deleteColor ? "" : e.target.value,
-      };
-    });
     try {
       await api({
         url: "/cards/update",
@@ -669,7 +672,7 @@ function CardDetails({
                   >
                     <img src={coveru} alt="Delete" /> cover
                   </Dropdown.Toggle>
-                  <Dropdown.Menu>
+                  <Dropdown.Menu style={{ padding: "80px" }}>
                     <Dropdown.Item as="span">
                       <input
                         type="color"
@@ -677,7 +680,12 @@ function CardDetails({
                         value={cardDetails.color}
                         onChange={updateCoverColor}
                       />
-                      {/* <button className="btn btn-info">Update Cover</button> */}
+                      <button
+                        className="btn btn-info"
+                        onClick={(e) => handleChangeColorRequest(e, false)}
+                      >
+                        Update Cover
+                      </button>
 
                       {cardDetails.color && (
                         <button
@@ -735,7 +743,7 @@ function CardDetails({
                       </div>
                     </Dropdown.Item>
                     <Button
-                      style={{ width: "80px", margin: "15px" }}
+                      style={{ width: "50px", margin: "15px" }}
                       variant="primary"
                       size="sm"
                       onClick={movingRequest}

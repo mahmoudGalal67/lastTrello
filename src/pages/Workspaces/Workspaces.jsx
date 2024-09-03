@@ -231,6 +231,8 @@ function Workspace() {
     }
   }, [show]);
 
+  console.log(workSpaces);
+
   if (loading) {
     return (
       <div className="w-100 h-100 d-flex justify-content-center align-items-center position-fixed top-0 left-0">
@@ -243,7 +245,11 @@ function Workspace() {
 
   return (
     <div className="home">
-      <Navbar workSpaces={workSpaces} setShow={setShow} />
+      <Navbar
+        workSpaces={workSpaces}
+        setShow={setShow}
+        setworkSpaces={setworkSpaces}
+      />
       <SideBar show={show} setShow={setShow} />
       <div className="views">
         {workSpaces.map((workspace) => (

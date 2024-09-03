@@ -13,7 +13,7 @@ import "./navbar.css";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useNavigate } from "react-router-dom";
 
-function NavBar({ workSpaces, setShow }) {
+function NavBar({ workSpaces, setShow, setworkSpaces }) {
   const [error, setError] = useState(null);
   const [users, setUsers] = useState([]);
   const { user, dispatch } = useContext(AuthContext);
@@ -57,10 +57,9 @@ function NavBar({ workSpaces, setShow }) {
         data: {
           name: boardTitle.current.value,
           workspace_id: workspaceId,
-          // photo: "",
         },
       });
-      window.location.reload();
+      navigate(`/board/${workspaceId}/${data.data.id}`);
     } catch (err) {
       console.log(err);
       setError(err.response?.data?.message || "somting went wrong");
@@ -76,7 +75,8 @@ function NavBar({ workSpaces, setShow }) {
         headers: { Authorization: `Bearer ${cookies}` },
         data: { name: workspaceTitle.current.value },
       });
-      window.location.reload();
+      setworkSpaces((prev) => [...prev, data.result]);
+      document.querySelector(".create .dropdown-menu").classList.remove("show");
     } catch (err) {
       console.log(err);
       setError(err.response?.data?.message);
