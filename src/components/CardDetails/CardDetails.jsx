@@ -95,6 +95,8 @@ function CardDetails({
     desc: false,
     comment: false,
   });
+
+  const [editComment, seteditComment] = useState(false);
   const newComment = useRef(null);
 
   // cahnges
@@ -594,22 +596,96 @@ function CardDetails({
 
                 <div className="wrapper">
                   {cardDetails.comments?.map((comment, i) => (
-                    <div className="comment-item" key={i}>
-                      <div className="user-info">
-                        {user.name.charAt(0).toUpperCase()}
-                      </div>
-                      <input
-                        key={i}
-                        className="comment"
-                        type="text"
-                        placeholder="Write a comment…"
-                        data-testid="card-back-new-comment-input-skeleton"
-                        aria-placeholder={comment.comment}
-                        aria-label="Write a comment"
-                        read-only
-                        value={comment.comment}
-                        style={{ color: "white" }}
-                      ></input>
+                    <div>
+                      {!editComment ? (
+                        <>
+                          <div className="comment-item" key={i}>
+                            <Dropdown>
+                              <Dropdown.Toggle
+                                className="custom-dropdown-toggle p-0 no-caret"
+                                as="button"
+                              >
+                                <div className="user-info">
+                                  {user.name
+                                    .split(" ")[0]
+                                    .charAt(0)
+                                    .toUpperCase()}
+                                  {"."}
+                                  {user.name
+                                    .split(" ")[1]
+                                    ?.charAt(0)
+                                    ?.toUpperCase()}
+                                </div>
+                              </Dropdown.Toggle>
+                              <Dropdown.Menu>
+                                <Dropdown.Item>
+                                  <div className="top">
+                                    <div className="wrapper">
+                                      <div className="user-info">
+                                        {user.name
+                                          .split(" ")[0]
+                                          .charAt(0)
+                                          .toUpperCase()}
+                                        {"."}
+                                        {user.name
+                                          .split(" ")[1]
+                                          ?.charAt(0)
+                                          ?.toUpperCase()}
+                                      </div>
+                                      <div className="info">
+                                        <div className="email">{user.name}</div>
+                                        <div className="email">
+                                          {user.email}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="bottom"></div>
+                                </Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
+                            <input
+                              key={i}
+                              className="comment"
+                              type="text"
+                              placeholder="Write a comment…"
+                              data-testid="card-back-new-comment-input-skeleton"
+                              aria-placeholder={comment.comment}
+                              aria-label="Write a comment"
+                              read-only
+                              value={comment.comment}
+                              style={{ color: "white" }}
+                            ></input>
+                          </div>
+                          <div className="control">
+                            <span onClick={() => seteditComment(true)}>
+                              Edit
+                            </span>
+                            <span>Delete</span>
+                          </div>{" "}
+                        </>
+                      ) : (
+                        <>
+                          <ReactQuill
+                            theme="snow"
+                            modules={module}
+                            value={cardDetails.description}
+                            onChange={(e) => updateDetails("description", e)}
+                          />
+                          <div className="wrapper" style={{ margin: "16px 0" }}>
+                            <button type="submit" className="save">
+                              Save
+                            </button>
+                            <button
+                              name="desc"
+                              onClick={() => seteditComment(false)}
+                              className="cancel"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </>
+                      )}
                     </div>
                   ))}
                 </div>

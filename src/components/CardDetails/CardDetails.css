@@ -257,6 +257,53 @@
   align-items: center;
   gap: 8px;
 }
+.modal-body .comments .wrapper .comment-item .dropdown-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.modal-body .comments .wrapper .comment-item .dropdown-menu {
+  padding: 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.modal-body .comments .wrapper .comment-item .dropdown-item .top,
+.modal-body .comments .wrapper .comment-item .dropdown-item .bottom {
+  height: 80px;
+  padding: 12px;
+}
+
+.modal-body .comments .wrapper .comment-item .dropdown-item .top {
+  background-color: #579dff;
+}
+.modal-body .comments .wrapper .comment-item .dropdown-item .top .wrapper {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: -50%;
+}
+.modal-body .comments .wrapper .comment-item .dropdown-item .top .user-info {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  color: white;
+  font-size: 24px;
+  margin-bottom: -50%;
+  position: relative;
+  z-index: 10;
+}
+
+.modal-body .comments .wrapper .comment-item .dropdown-item .bottom {
+  background-color: #282e33;
+}
+
+.modal-body .comments .wrapper .control span {
+  font-size: 14px;
+  margin: 8px;
+  cursor: pointer;
+  text-decoration: underline;
+  color: #cad1d8;
+}
 
 .modal-body .user-info {
   background-color: #172b4d;
@@ -266,6 +313,8 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
+  color: white;
+  font-size: 12px;
 }
 
 .modal-body form.add-comments .wrapper {

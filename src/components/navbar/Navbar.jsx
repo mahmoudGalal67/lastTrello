@@ -302,7 +302,9 @@ function NavBar({ workSpaces, setShow, setworkSpaces }) {
                   className="user-name no-caret"
                   id="dropdown-basic"
                 >
-                  {user.name.charAt(0).toUpperCase()}
+                  {user.name.split(" ")[0].charAt(0).toUpperCase()}
+                  {"."}
+                  {user.name.split(" ")[1]?.charAt(0)?.toUpperCase()}
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
