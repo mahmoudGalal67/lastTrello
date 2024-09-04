@@ -62,8 +62,8 @@ function Board() {
     <div
       className="boards"
       style={{
-        backgroundImage: board.board_background
-          ? `url(https://back.alyoumsa.com/public/storage/${board.board_background})`
+        backgroundImage: board.background
+          ? `url(https://back.alyoumsa.com/public/storage/${board.background})`
           : "url(/photo-1675981004510-4ec798f42006.jpg)",
         backgroundSize: "cover",
       }}
@@ -72,7 +72,7 @@ function Board() {
       <SideBar show={show} setShow={setShow} />
       <div className="wrapper views">
         <div className="board-options">
-          <span>{board.board_name}</span>
+          <span>{board.name}</span>
         </div>
         <div className="wrapper-lists">
           {board.lists_of_the_board.map((list) => (
@@ -86,11 +86,7 @@ function Board() {
             />
           ))}
 
-          <AddList
-            setShow={setShow}
-            boardId={board.board_id}
-            setboard={setboard}
-          />
+          <AddList setShow={setShow} boardId={board.id} setboard={setboard} />
         </div>
       </div>
     </div>

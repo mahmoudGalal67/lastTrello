@@ -101,15 +101,15 @@ function Workspace() {
 
         setworkSpaces((prevWorkspaces) =>
           prevWorkspaces.map((workspace) =>
-            workspace.workspace_id === workspace_id
+            workspace.id === workspace_id
               ? {
                   ...workspace,
                   boards_of_the_workspace:
                     workspace.boards_of_the_workspace.map((board) =>
-                      board.board_id === board_id
+                      board.id === board_id
                         ? {
                             ...board,
-                            board_name: editedBoardName,
+                            name: editedBoardName,
                             photo: updatedPhotoUrl,
                           }
                         : board
@@ -123,7 +123,6 @@ function Workspace() {
         setEditedBoardName("");
         setEditedBoardPhoto("");
         setShowModal(false);
-        fetchWorkspaces();
       } else {
         console.log(
           "Board name update failed:",
@@ -153,12 +152,12 @@ function Workspace() {
 
         setworkSpaces((prevWorkspaces) =>
           prevWorkspaces.map((workspace) =>
-            workspace.workspace_id === workspace_id
+            workspace.id === workspace_id
               ? {
                   ...workspace,
                   boards_of_the_workspace:
                     workspace.boards_of_the_workspace.filter(
-                      (board) => board.board_id !== board_id
+                      (board) => board.id !== board_id
                     ),
                 }
               : workspace
@@ -183,8 +182,8 @@ function Workspace() {
 
       setworkSpaces((prevWorkspaces) =>
         prevWorkspaces.map((workspace) =>
-          workspace.workspace_id === editingWorkspaceId
-            ? { ...workspace, workspace_name: editedWorkspaceName }
+          workspace.id === editingWorkspaceId
+            ? { ...workspace, name: editedWorkspaceName }
             : workspace
         )
       );
@@ -213,9 +212,7 @@ function Workspace() {
         });
 
         setworkSpaces((prevWorkspaces) =>
-          prevWorkspaces.filter(
-            (workspace) => workspace.workspace_id !== workspace_id
-          )
+          prevWorkspaces.filter((workspace) => workspace.id !== workspace_id)
         );
       } catch (error) {
         console.log("Error deleting workspace:", error);
@@ -230,8 +227,6 @@ function Workspace() {
       document.querySelector(".views")?.classList.remove("large");
     }
   }, [show]);
-
-  console.log(workSpaces);
 
   if (loading) {
     return (
@@ -253,10 +248,10 @@ function Workspace() {
       <SideBar show={show} setShow={setShow} />
       <div className="views">
         {workSpaces.map((workspace) => (
-          <div className="workspace-item" key={workspace.workspace_id}>
+          <div className="workspace-item" key={workspace.id}>
             <div className="d-flex justify-content-between mb-5">
               <div>
-                <h2>{workspace.workspace_name}</h2>
+                <h2>{workspace.name}</h2>
               </div>
               <div>
                 <Dropdown>
@@ -269,18 +264,13 @@ function Workspace() {
                   <Dropdown.Menu>
                     <Dropdown.Item
                       onClick={() =>
-                        handleEditWorkspaceClick(
-                          workspace.workspace_id,
-                          workspace.workspace_name
-                        )
+                        handleEditWorkspaceClick(workspace.id, workspace.name)
                       }
                     >
                       <i className="fa-regular fa-pen-to-square me-2"></i> Edit
                     </Dropdown.Item>
                     <Dropdown.Item
-                      onClick={() =>
-                        handleDeleteWorkspaceClick(workspace.workspace_id)
-                      }
+                      onClick={() => handleDeleteWorkspaceClick(workspace.id)}
                       className="text-danger"
                     >
                       <i className="fa-regular fa-trash-can me-2"></i> Delete
@@ -291,21 +281,21 @@ function Workspace() {
             </div>
             <div className="wrapper views-wrapper">
               {workspace.boards_of_the_workspace.map((board) => (
-                <div className="board-container" key={board.board_id}>
+                <div className="board-container" key={board.id}>
                   <div
                     className="card"
                     style={{
-                      backgroundImage: board.board_background
-                        ? `url(https://back.alyoumsa.com/public/storage/${board.board_background})`
+                      backgroundImage: board.photo
+                        ? `url(https://back.alyoumsa.com/public/storage/${board.photo})`
                         : "url(/photo-1675981004510-4ec798f42006.jpg)",
                     }}
                   >
                     <Link
                       className="board-link"
-                      to={`board/${workspace.workspace_id}/${board.board_id}`}
+                      to={`board/${workspace.id}/${board.id}`}
                     >
                       <div className="card-content">
-                        <p className="board-name">{board.board_name}</p>
+                        <p className="board-name">{board.name}</p>
                       </div>
                     </Link>
                     <Dropdown>
@@ -324,11 +314,7 @@ function Workspace() {
                       <Dropdown.Menu>
                         <Dropdown.Item
                           onClick={() =>
-                            handleEditClick(
-                              board.board_id,
-                              board.board_name,
-                              board.board_background
-                            )
+                            handleEditClick(board.id, board.name, board.photo)
                           }
                         >
                           <i className="fa-regular fa-pen-to-square me-2"></i>{" "}
@@ -336,10 +322,7 @@ function Workspace() {
                         </Dropdown.Item>
                         <Dropdown.Item
                           onClick={() =>
-                            handleDeleteClick(
-                              workspace.workspace_id,
-                              board.board_id
-                            )
+                            handleDeleteClick(workspace.id, board.id)
                           }
                           className="text-danger"
                         >
@@ -383,13 +366,13 @@ function Workspace() {
           </Button>
           <Button
             variant="primary"
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
+
               const workspace = workSpaces.find((ws) =>
-                ws.boards_of_the_workspace.some(
-                  (b) => b.board_id === editingBoardId
-                )
+                ws.boards_of_the_workspace.some((b) => b.id === editingBoardId)
               );
-              handleSaveClick(workspace.workspace_id, editingBoardId);
+              handleSaveClick(workspace.id, editingBoardId);
             }}
           >
             Save Changes

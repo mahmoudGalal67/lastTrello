@@ -203,11 +203,11 @@ function NavBar({ workSpaces, setShow, setworkSpaces }) {
               <NavDropdown title="Workspaces" id="navbarScrollingDropdown">
                 {workSpaces.map((workspace) => (
                   <NavDropdown.Item
-                    key={workspace.workspace_id}
+                    key={workspace.id}
                     as={Link}
-                    to={`/workspace/${workspace.workspace_id}`}
+                    to={`/workspace/${workspace.id}`}
                   >
-                    {workspace.workspace_name}
+                    {workspace.name}
                   </NavDropdown.Item>
                 ))}
               </NavDropdown>

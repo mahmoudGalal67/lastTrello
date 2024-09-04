@@ -91,7 +91,7 @@ function SideBar({ show, setShow }) {
           {workSpace ? (
             <Offcanvas.Title>
               <img src="/photo-1675981004510-4ec798f42006.jpg" alt="" />
-              {workSpace.workspace_name}
+              {workSpace.name}
             </Offcanvas.Title>
           ) : (
             <img
@@ -156,7 +156,7 @@ function SideBar({ show, setShow }) {
             workSpace.boards_of_the_workspace.map((board) => (
               <Link
                 key={board.board_id}
-                to={`/board/${workSpace.workspace_id}/${board.board_id}`}
+                to={`/board/${workSpace.id}/${board.id}`}
                 className="board-item"
               >
                 <img
@@ -167,7 +167,7 @@ function SideBar({ show, setShow }) {
                   }
                   alt=""
                 />
-                <span>{board.board_name} </span>
+                <span>{board.name} </span>
               </Link>
             ))}
         </Offcanvas.Body>

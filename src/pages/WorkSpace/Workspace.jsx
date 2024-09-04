@@ -278,8 +278,7 @@ function Workspace() {
         <div className="workspace views-wrapper">
           <div className="header">
             <div className="left">
-              <img src="" alt="" />
-              <h2>{workSpace.workspace_name} Workspace</h2>
+              <h2>{workSpace.name} Workspace</h2>
             </div>
             <div className="right">
               <Button
@@ -353,7 +352,7 @@ function Workspace() {
                     <Link
                       key={board.board_id}
                       className="board-link"
-                      to={`/board/${workspaceId}/${board.board_id}`}
+                      to={`/board/${workspaceId}/${board.id}`}
                     >
                       <div className="card">
                         <img
@@ -364,7 +363,7 @@ function Workspace() {
                           }
                           alt=""
                         />
-                        <p style={{ padding: "8px" }}>{board.board_name}</p>
+                        <p style={{ padding: "8px" }}>{board.name}</p>
                       </div>
                     </Link>
                   ))}
