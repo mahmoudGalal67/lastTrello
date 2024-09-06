@@ -41,7 +41,7 @@ function Card({ card, onCardDelete, listId, board, setShow }) {
   return (
     <>
       <div className="item" onClick={onOpenModal}>
-        {cardDetails.color && (
+        {cardDetails?.color && (
           <div
             className="cover-image"
             style={{
@@ -49,7 +49,7 @@ function Card({ card, onCardDelete, listId, board, setShow }) {
             }}
           ></div>
         )}
-        <div className="title">{cardDetails.text}</div>
+        <div className="title">{cardDetails?.text}</div>
       </div>
       <CardDetails
         onCloseModal={onCloseModal}

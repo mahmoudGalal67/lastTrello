@@ -346,19 +346,23 @@ function CardDetails({
 
   const addComment = async (e) => {
     e.preventDefault();
-    setcardDetails((prev) => {
-      return {
-        ...prev,
-        comments: [...prev.comments, { comment: newComment.current.value }],
-      };
-    });
+
     closeItem("comment");
     try {
-      await api({
+      const { data } = await api({
         url: "/comments/create",
         headers: { Authorization: `Bearer ${cookies}` },
         data: { card_id: cardDetails.id, comment: newComment.current.value },
         method: "post",
+      });
+      setcardDetails((prev) => {
+        return {
+          ...prev,
+          comments: [
+            ...prev.comments,
+            { comment: data.result.comment, comment_id: data.result.id },
+          ],
+        };
       });
     } catch (err) {
       console.log(err);
@@ -399,7 +403,7 @@ function CardDetails({
       {" "}
       <Modal classNames="card-modal" open={open} onClose={onCloseModal} center>
         <div className="modal-body">
-          {cardDetails.color && (
+          {cardDetails?.color && (
             <div
               className="cover-image"
               style={{
@@ -604,7 +608,12 @@ function CardDetails({
                 <div className="wrapper">
                   {cardDetails.comments?.map((comment, i) => (
                     <div key={i}>
-                      <Comment comment={comment} user={user} />
+                      <Comment
+                        comment={comment}
+                        user={user}
+                        cardId={cardDetails.id}
+                        setcardDetails={setcardDetails}
+                      />
                     </div>
                   ))}
                 </div>
@@ -682,7 +691,7 @@ function CardDetails({
                         Update Cover
                       </button>
 
-                      {cardDetails.color && (
+                      {cardDetails?.color && (
                         <button
                           className="btn btn-danger"
                           onClick={(e) => updateCoverColor(e, true)}

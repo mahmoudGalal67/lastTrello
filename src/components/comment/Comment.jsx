@@ -1,17 +1,78 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Dropdown } from "react-bootstrap";
 import ReactQuill from "react-quill";
+import Cookies from "js-cookie";
+import api from "../../apiAuth/auth";
 
-function Comment({ comment, user }) {
+function Comment({ comment, user, cardId, setcardDetails }) {
+  const [editComment, seteditComment] = useState(false);
+  const [updatedComment, setupdatedComment] = useState(comment.comment);
   const toolbarOptions = [
     ["bold", "italic"],
     ["link", "image"],
   ];
 
+  const cookies = Cookies.get("token");
+
   const module = {
     toolbar: toolbarOptions,
   };
-  const [editComment, seteditComment] = useState(false);
+
+  const editCommentRequest = async (id) => {
+    if (updatedComment == "<p><br></p>") {
+      return;
+    }
+    try {
+      const response = await api({
+        url: `/comments/update`,
+        method: "POST",
+        headers: { Authorization: `Bearer ${cookies}` },
+        data: {
+          comment_id: comment.comment_id.toString(),
+          card_id: cardId,
+          comment: updatedComment,
+        },
+      });
+      setcardDetails((prev) => ({
+        ...prev,
+        comments: prev.comments.map((comment) => {
+          if (comment.comment_id == id) {
+            return {
+              ...comment,
+              comment: updatedComment,
+            };
+          } else {
+            return comment;
+          }
+        }),
+      }));
+      seteditComment(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  console.log(comment.id);
+
+  const deleteCommentRequest = async (id) => {
+    if (confirm("Are you sure you want to proceed?")) {
+      try {
+        const response = await api({
+          url: `/comments/destroy/${id}`,
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${cookies}` },
+        });
+        setcardDetails((prev) => ({
+          ...prev,
+          comments: prev.comments.filter(
+            (comment) => comment.comment_id !== id
+          ),
+        }));
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
 
   if (!editComment) {
     return (
@@ -57,19 +118,30 @@ function Comment({ comment, user }) {
         </div>
         <div className="control">
           <span onClick={() => seteditComment(true)}>Edit</span>
-          <span>Delete</span>
+          <span onClick={(e) => deleteCommentRequest(comment.comment_id)}>
+            Delete
+          </span>
         </div>{" "}
       </div>
     );
   } else {
     return (
       <>
-        <ReactQuill theme="snow" modules={module} value={comment.comment} />
+        <ReactQuill
+          theme="snow"
+          modules={module}
+          value={updatedComment}
+          onChange={(e) => setupdatedComment(e)}
+        />
         <div
           className="wrapper"
           style={{ margin: "16px 0", flexDirection: "row" }}
         >
-          <button type="submit" className="save">
+          <button
+            type="submit"
+            className="save"
+            onClick={(e) => editCommentRequest(comment.comment_id)}
+          >
             Save
           </button>
           <button
