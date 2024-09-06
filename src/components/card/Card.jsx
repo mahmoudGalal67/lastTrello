@@ -27,7 +27,7 @@ function Card({ card, onCardDelete, listId, board, setShow }) {
     const fetchcarddetails = async () => {
       try {
         const { data } = await api({
-          url: `cards/get-card/${card.card_id}`,
+          url: `cards/get-card/${card.id}`,
           headers: { Authorization: `Bearer ${cookies}` },
         });
         setcardDetails(data.data);

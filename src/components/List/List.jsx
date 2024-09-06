@@ -16,7 +16,7 @@ function List({ list, setboard, boardId, board, setShow }) {
   const [showCardList, setshowCardList] = useState(false);
   const [error, seterror] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [editedListName, setEditedListName] = useState(list.list_title);
+  const [editedListName, setEditedListName] = useState(list.title);
 
   const cardTitle = useRef(null);
 
@@ -31,21 +31,21 @@ function List({ list, setboard, boardId, board, setShow }) {
         headers: { Authorization: `Bearer ${cookies}` },
         data: {
           text: cardTitle.current.value,
-          the_list_id: list.list_id,
+          the_list_id: list.id,
           // photo: "",
         },
       });
       setboard((prev) => ({
         ...prev,
         lists_of_the_board: prev.lists_of_the_board.map((item) => {
-          if (item.list_id == list.list_id) {
+          if (item.id == list.id) {
             return {
               ...item,
               cards_of_the_list: [
                 ...item.cards_of_the_list,
                 {
-                  card_id: data.data.id,
-                  card_text: data.data.text,
+                  id: data.data.id,
+                  text: data.data.text,
                 },
               ],
             };
@@ -72,11 +72,11 @@ function List({ list, setboard, boardId, board, setShow }) {
       setboard((prev) => ({
         ...prev,
         lists_of_the_board: prev.lists_of_the_board.map((item) => {
-          if (item.list_id === list.list_id) {
+          if (item.id === list.id) {
             return {
               ...item,
               cards_of_the_list: item.cards_of_the_list.filter(
-                (card) => card.card_id !== cardId
+                (card) => card.id !== cardId
               ),
             };
           }
@@ -94,7 +94,7 @@ function List({ list, setboard, boardId, board, setShow }) {
     if (window.confirm("Are you sure you want to delete this list?")) {
       try {
         await api({
-          url: `/lists/destroy/${list.list_id}`,
+          url: `/lists/destroy/${list.id}`,
           method: "DELETE",
           headers: { Authorization: `Bearer ${cookies}` },
         });
@@ -102,7 +102,7 @@ function List({ list, setboard, boardId, board, setShow }) {
         setboard((prev) => ({
           ...prev,
           lists_of_the_board: prev.lists_of_the_board.filter(
-            (item) => item.list_id !== list.list_id
+            (item) => item.id !== list.id
           ),
         }));
       } catch (err) {
@@ -115,7 +115,7 @@ function List({ list, setboard, boardId, board, setShow }) {
   // Function to handle list title editing
 
   const handleEditListClick = () => {
-    setEditedListName(list.list_title);
+    setEditedListName(list.title);
     setShowEditModal(true);
   };
 
@@ -131,7 +131,7 @@ function List({ list, setboard, boardId, board, setShow }) {
         method: "POST",
         headers: { Authorization: `Bearer ${cookies}` },
         data: {
-          list_id: list.list_id,
+          list_id: list.id,
           board_id: boardId,
           title: editedListName,
         },
@@ -141,9 +141,7 @@ function List({ list, setboard, boardId, board, setShow }) {
         setboard((prev) => ({
           ...prev,
           lists_of_the_board: prev.lists_of_the_board.map((item) =>
-            item.list_id === list.list_id
-              ? { ...item, list_title: editedListName }
-              : item
+            item.id === list.id ? { ...item, title: editedListName } : item
           ),
         }));
         setShowEditModal(false);
@@ -162,7 +160,7 @@ function List({ list, setboard, boardId, board, setShow }) {
   return (
     <div className="list">
       <div className="list-header d-flex align-items-center justify-content-between my-2">
-        <h3>{list.list_title}</h3>
+        <h3>{list.title}</h3>
         <Dropdown>
           <Dropdown.Toggle
             as="button"
@@ -183,9 +181,9 @@ function List({ list, setboard, boardId, board, setShow }) {
       <div className="wrapper">
         {list.cards_of_the_list.map((card) => (
           <Card
-            key={card.card_id}
+            key={card.id}
             card={card}
-            listId={list.list_id}
+            listId={list.id}
             onCardDelete={handleCardDelete}
             board={board}
             setShow={setShow}

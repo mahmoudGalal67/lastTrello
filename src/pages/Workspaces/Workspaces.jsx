@@ -285,7 +285,7 @@ function Workspace() {
                   <div
                     className="card"
                     style={{
-                      backgroundImage: board.phot
+                      backgroundImage: board.photo
                         ? `url(https://back.alyoumsa.com/public/storage/${board.photo})`
                         : "url(/photo-1675981004510-4ec798f42006.jpg)",
                     }}

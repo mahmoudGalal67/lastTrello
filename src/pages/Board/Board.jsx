@@ -62,8 +62,8 @@ function Board() {
     <div
       className="boards"
       style={{
-        backgroundImage: board.background
-          ? `url(https://back.alyoumsa.com/public/storage/${board.background})`
+        backgroundImage: board.photo
+          ? `url(https://back.alyoumsa.com/public/storage/${board.photo})`
           : "url(/photo-1675981004510-4ec798f42006.jpg)",
         backgroundSize: "cover",
       }}
@@ -77,7 +77,7 @@ function Board() {
         <div className="wrapper-lists">
           {board.lists_of_the_board.map((list) => (
             <List
-              key={list.list_id}
+              key={list.id}
               list={list}
               boardId={Number(boardId)}
               setboard={setboard}

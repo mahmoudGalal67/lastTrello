@@ -29,6 +29,7 @@ import { useEffect, useRef, useState, useContext } from "react";
 import Cookies from "js-cookie";
 import api from "../../apiAuth/auth";
 import { Button, Dropdown, Spinner } from "react-bootstrap";
+import Comment from "../comment/Comment";
 
 const CalendarIcon = () => {
   return (
@@ -82,7 +83,7 @@ function CardDetails({
   const { user } = useContext(AuthContext);
 
   const [activeMovinglist, setactiveMovinglist] = useState(
-    board.lists_of_the_board[0].list_id
+    board.lists_of_the_board[0].id
   );
 
   const [newPosotion, setnewPosotion] = useState(1);
@@ -96,7 +97,6 @@ function CardDetails({
     comment: false,
   });
 
-  const [editComment, seteditComment] = useState(false);
   const newComment = useRef(null);
 
   // cahnges
@@ -135,7 +135,7 @@ function CardDetails({
         },
         data: { the_list_id: activeMovinglist, position: newPosotion },
       });
-      // window.location.reload();
+      window.location.reload();
     } catch (err) {
       console.log(err);
     }
@@ -303,7 +303,7 @@ function CardDetails({
           photo: other.photo && other.photo.replace("/storage/", ""),
           card_id: cardDetails.id,
           the_list_id: listId,
-          color: deleteColor ? "" : e.target.value,
+          color: deleteColor ? "" : cardDetails.color,
         },
         method: "post",
       });
@@ -536,8 +536,8 @@ function CardDetails({
               </div>
               {showdetails && (
                 <div className="details-wrapper">
-                  {cardDetails.card_details.map((item) => (
-                    <div className="wrapper">
+                  {cardDetails.card_details.map((item, i) => (
+                    <div className="wrapper" key={i}>
                       <div className="user-info">
                         {item.user_name.charAt(0).toUpperCase()}
                       </div>
@@ -568,18 +568,25 @@ function CardDetails({
                   ></input>
                 ) : (
                   <form onSubmit={addComment} className="add-comments">
-                    <textarea
+                    <ReactQuill
+                      theme="snow"
+                      modules={module}
+                      ref={newComment}
+                      required
+                      autoFocus
+                      placeholder="Write a comment…"
+                    />
+                    {/* <textarea
                       className="comment add-comment input"
                       type="text"
-                      placeholder="Write a comment…"
                       data-testid="card-back-new-comment-input-skeleton"
                       aria-placeholder="Write a comment…"
                       aria-label="Write a comment"
-                      autoFocus
-                      ref={newComment}
-                      required
-                    ></textarea>
-                    <div className="wrapper">
+                    ></textarea> */}
+                    <div
+                      className="wrapper"
+                      style={{ flexDirection: "row", margin: "16px 0" }}
+                    >
                       <button type="submit" className="save">
                         Save
                       </button>
@@ -596,96 +603,8 @@ function CardDetails({
 
                 <div className="wrapper">
                   {cardDetails.comments?.map((comment, i) => (
-                    <div>
-                      {!editComment ? (
-                        <>
-                          <div className="comment-item" key={i}>
-                            <Dropdown>
-                              <Dropdown.Toggle
-                                className="custom-dropdown-toggle p-0 no-caret"
-                                as="button"
-                              >
-                                <div className="user-info">
-                                  {user.name
-                                    .split(" ")[0]
-                                    .charAt(0)
-                                    .toUpperCase()}
-                                  {"."}
-                                  {user.name
-                                    .split(" ")[1]
-                                    ?.charAt(0)
-                                    ?.toUpperCase()}
-                                </div>
-                              </Dropdown.Toggle>
-                              <Dropdown.Menu>
-                                <Dropdown.Item>
-                                  <div className="top">
-                                    <div className="wrapper">
-                                      <div className="user-info">
-                                        {user.name
-                                          .split(" ")[0]
-                                          .charAt(0)
-                                          .toUpperCase()}
-                                        {"."}
-                                        {user.name
-                                          .split(" ")[1]
-                                          ?.charAt(0)
-                                          ?.toUpperCase()}
-                                      </div>
-                                      <div className="info">
-                                        <div className="email">{user.name}</div>
-                                        <div className="email">
-                                          {user.email}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="bottom"></div>
-                                </Dropdown.Item>
-                              </Dropdown.Menu>
-                            </Dropdown>
-                            <input
-                              key={i}
-                              className="comment"
-                              type="text"
-                              placeholder="Write a comment…"
-                              data-testid="card-back-new-comment-input-skeleton"
-                              aria-placeholder={comment.comment}
-                              aria-label="Write a comment"
-                              read-only
-                              value={comment.comment}
-                              style={{ color: "white" }}
-                            ></input>
-                          </div>
-                          <div className="control">
-                            <span onClick={() => seteditComment(true)}>
-                              Edit
-                            </span>
-                            <span>Delete</span>
-                          </div>{" "}
-                        </>
-                      ) : (
-                        <>
-                          <ReactQuill
-                            theme="snow"
-                            modules={module}
-                            value={cardDetails.description}
-                            onChange={(e) => updateDetails("description", e)}
-                          />
-                          <div className="wrapper" style={{ margin: "16px 0" }}>
-                            <button type="submit" className="save">
-                              Save
-                            </button>
-                            <button
-                              name="desc"
-                              onClick={() => seteditComment(false)}
-                              className="cancel"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        </>
-                      )}
+                    <div key={i}>
+                      <Comment comment={comment} user={user} />
                     </div>
                   ))}
                 </div>
@@ -792,8 +711,8 @@ function CardDetails({
                           onChange={(e) => setactiveMovinglist(e.target.value)}
                         >
                           {board.lists_of_the_board.map((list) => (
-                            <option key={list.list_id} value={list.list_id}>
-                              {list.list_title}
+                            <option key={list.id} value={list.id}>
+                              {list.title}
                             </option>
                           ))}
                         </Form.Select>
@@ -806,7 +725,7 @@ function CardDetails({
                         >
                           {Array(
                             board.lists_of_the_board.find(
-                              (item) => item.list_id == activeMovinglist
+                              (item) => item.id == activeMovinglist
                             ).cards_of_the_list.length + 1
                           )
                             .fill(1)

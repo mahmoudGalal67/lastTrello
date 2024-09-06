@@ -29,8 +29,8 @@ function addList({ boardId, setboard, setShow }) {
         lists_of_the_board: [
           ...prev.lists_of_the_board,
           {
-            list_id: data.data.id,
-            list_title: data.data.title,
+            id: data.data.id,
+            title: data.data.title,
             cards_of_the_list: [],
           },
         ],

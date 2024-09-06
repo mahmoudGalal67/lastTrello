@@ -155,7 +155,7 @@ function SideBar({ show, setShow }) {
           {workSpace &&
             workSpace.boards_of_the_workspace.map((board) => (
               <Link
-                key={board.board_id}
+                key={board.id}
                 to={`/board/${workSpace.id}/${board.id}`}
                 className="board-item"
               >
