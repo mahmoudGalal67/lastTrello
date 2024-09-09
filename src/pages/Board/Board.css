@@ -137,6 +137,10 @@
   border: 1px solid transparent;
   transition: all 0.3s ease-in;
 }
+.boards .list > .wrapper .item:active {
+  opacity: 0.7;
+  border: 1px solid rgb(49, 134, 214) !important;
+}
 
 .boards .list > .wrapper .item .title {
   padding: 8px 12px;

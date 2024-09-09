@@ -1,12 +1,10 @@
-import date from "../../../public/date.svg";
-import user from "../../../public/user.svg";
-import list from "../../../public/list.svg";
 import attach from "../../../public/attach.svg";
 import deleteimage from "../../../public/delete.svg";
 import coveru from "../../../public/coveru.svg";
 import deleteDate from "../../../public/deleteDate.svg";
 import deleteCover from "../../../public/deleteCover.svg";
 import move from "../../../public/move.svg";
+import copy from "../../../public/copy.svg";
 
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
@@ -124,10 +122,13 @@ function CardDetails({
     }
   };
 
-  const movingRequest = async () => {
+  const movingRequest = async (type) => {
     try {
       const response = await api({
-        url: `cards/move-card/${cardDetails.id}`,
+        url:
+          type == "move"
+            ? `cards/move-card/${cardDetails.id}`
+            : `cards/copy-card/${cardDetails.id}`,
         method: "POST",
         headers: {
           Authorization: `Bearer ${cookies}`,
@@ -747,12 +748,66 @@ function CardDetails({
                       </div>
                     </Dropdown.Item>
                     <Button
-                      style={{ width: "50px", margin: "15px" }}
+                      style={{ width: "60px", margin: "15px" }}
                       variant="primary"
                       size="sm"
-                      onClick={movingRequest}
+                      onClick={() => movingRequest("move")}
                     >
                       Move
+                    </Button>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+              <div className="item move">
+                <Dropdown autoClose="outside">
+                  <Dropdown.Toggle
+                    className="custom-dropdown-toggle p-0 no-caret"
+                    as="button"
+                  >
+                    <img src={copy} alt="copy" /> copy
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu drop="start">
+                    <Dropdown.Item>
+                      <div>
+                        <label htmlFor="">List</label>
+                        <Form.Select
+                          size="sm"
+                          onChange={(e) => setactiveMovinglist(e.target.value)}
+                        >
+                          {board.lists_of_the_board.map((list) => (
+                            <option key={list.id} value={list.id}>
+                              {list.title}
+                            </option>
+                          ))}
+                        </Form.Select>
+                      </div>
+                      <div>
+                        <label htmlFor="">Position</label>
+                        <Form.Select
+                          size="sm"
+                          onChange={(e) => setnewPosotion(e.target.value)}
+                        >
+                          {Array(
+                            board.lists_of_the_board.find(
+                              (item) => item.id == activeMovinglist
+                            ).cards_of_the_list.length + 1
+                          )
+                            .fill(1)
+                            .map((item, i) => (
+                              <option key={i} value={i + 1}>
+                                {i + 1}
+                              </option>
+                            ))}
+                        </Form.Select>
+                      </div>
+                    </Dropdown.Item>
+                    <Button
+                      style={{ width: "60px", margin: "15px" }}
+                      variant="primary"
+                      size="sm"
+                      onClick={() => movingRequest("copy")}
+                    >
+                      Copy
                     </Button>
                   </Dropdown.Menu>
                 </Dropdown>

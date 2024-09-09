@@ -17,6 +17,8 @@ import api from "../../apiAuth/auth";
 function Board() {
   const [show, setShow] = useState(true);
 
+  const [postion, setpostion] = useState(null);
+
   const [loading, setLoading] = useState(true);
   const [board, setboard] = useState({});
   const { boardId } = useParams();
@@ -47,6 +49,71 @@ function Board() {
       document.querySelector(".views")?.classList.remove("large");
     }
   }, [show]);
+
+  const onDrop = async (newList, place) => {
+    setboard((prev) => ({
+      ...prev,
+      lists_of_the_board: [
+        ...prev.lists_of_the_board.map((list, i) => {
+          if (list.id == newList && postion.prevList != newList) {
+            list.cards_of_the_list.splice(place - 1, 0, postion.card);
+            return {
+              ...list,
+              cards_of_the_list: list.cards_of_the_list,
+            };
+          } else if (
+            list.id == postion.prevList &&
+            postion.prevList != newList
+          ) {
+            return {
+              ...list,
+              cards_of_the_list: list.cards_of_the_list.filter(
+                (card) => card.id != postion.card.id
+              ),
+            };
+          } else if (
+            list.id == postion.prevList &&
+            postion.prevList == newList
+          ) {
+            const cards = list.cards_of_the_list.filter(
+              (card) => card.id != postion.card.id
+            );
+            cards.splice(
+              postion.index > place - 2 ? place - 1 : place - 2,
+              0,
+              postion.card
+            );
+            return {
+              ...list,
+              cards_of_the_list: cards,
+            };
+          } else {
+            return list;
+          }
+        }),
+      ],
+    }));
+
+    try {
+      const response = await api({
+        url: `cards/move-card/${postion.card.id}`,
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${cookies}`,
+          "Content-Type": "multipart/form-data",
+        },
+        data: {
+          the_list_id: newList,
+          position:
+            postion.index <= place - 2 && postion.prevList == newList
+              ? place - 1
+              : place,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   if (loading) {
     return (
@@ -83,6 +150,9 @@ function Board() {
               setboard={setboard}
               board={board}
               setShow={setShow}
+              onDrop={onDrop}
+              setpostion={setpostion}
+              position={postion}
             />
           ))}
 

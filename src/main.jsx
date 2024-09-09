@@ -14,6 +14,8 @@ import ProtectedRoute from "./ProtectedRoute.jsx";
 
 import { AuthContextProvider } from "./components/context/Auth.jsx";
 import Archeives from "./pages/archives/Archeives.jsx";
+import ProtectedAdminRoute from "./ProtectedAdminRoute.jsx";
+import AllMembers from "./pages/AllMembers/AllMembers.jsx";
 
 const router = createBrowserRouter([
   {
@@ -46,7 +48,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/register",
-    element: <Register />,
+    element: (
+      // <ProtectedAdminRoute>
+      <Register />
+      // </ProtectedAdminRoute>
+    ),
+  },
+  {
+    path: "/allMembers",
+    element: (
+      <ProtectedAdminRoute>
+        <AllMembers />
+      </ProtectedAdminRoute>
+    ),
   },
   {
     path: "/archeivedCards/:boardID",

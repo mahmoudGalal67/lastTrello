@@ -98,7 +98,7 @@ function Login() {
                   "Log in"
                 )}
               </Button>
-              <Link to="/register">Create an account</Link>
+              {/* <Link to="/register">Create an account</Link> */}
             </Form>
           )}
         </Formik>

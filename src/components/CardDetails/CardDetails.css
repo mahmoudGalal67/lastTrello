@@ -343,6 +343,10 @@
   opacity: 1;
 }
 
+.ql-tooltip.ql-editing {
+  left: 9px !important;
+}
+
 .ql-editor.ql-blank::before {
   color: white !important;
 }

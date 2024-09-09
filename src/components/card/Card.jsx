@@ -5,7 +5,15 @@ import api from "../../apiAuth/auth";
 
 import Cookies from "js-cookie";
 
-function Card({ card, onCardDelete, listId, board, setShow }) {
+function Card({
+  index,
+  card,
+  onCardDelete,
+  listId,
+  board,
+  setShow,
+  setpostion,
+}) {
   const [open, setOpen] = useState(false);
 
   const cookies = Cookies.get("token");
@@ -40,7 +48,13 @@ function Card({ card, onCardDelete, listId, board, setShow }) {
 
   return (
     <>
-      <div className="item" onClick={onOpenModal}>
+      <div
+        draggable
+        className="item"
+        onClick={onOpenModal}
+        onDragStart={() => setpostion({ index, card, prevList: listId })}
+        onDragEnd={() => setpostion(null)}
+      >
         {cardDetails?.color && (
           <div
             className="cover-image"

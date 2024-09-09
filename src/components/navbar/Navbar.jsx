@@ -13,7 +13,7 @@ import "./navbar.css";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useNavigate } from "react-router-dom";
 
-function NavBar({ workSpaces, setShow, setworkSpaces }) {
+function NavBar({ workSpaces, setShow, setworkSpaces, disableAdding }) {
   const [error, setError] = useState(null);
   const [users, setUsers] = useState([]);
   const { user, dispatch } = useContext(AuthContext);
@@ -230,7 +230,9 @@ function NavBar({ workSpaces, setShow, setworkSpaces }) {
                 ))}
               </NavDropdown>
             )}
-            {pathName !== "board" && pathName !== "workspace" ? (
+            {pathName !== "board" &&
+            pathName !== "workspace" &&
+            !disableAdding ? (
               <NavDropdown
                 title="Create Workspace"
                 id="navbarScrollingDropdown"
@@ -255,24 +257,26 @@ function NavBar({ workSpaces, setShow, setworkSpaces }) {
                 </form>
               </NavDropdown>
             ) : (
-              <NavDropdown
-                title="Create Board"
-                id="navbarScrollingDropdown"
-                className="create"
-                onClick={() => setShow(false)}
-              >
-                <form className="container" onSubmit={addBoard}>
-                  <h2>Board</h2>
-                  <div className="input-wrapper">
-                    <label htmlFor="">Board title *</label>
-                    <input ref={boardTitle} type="text" required autoFocus />
-                  </div>
-                  <Button type="submit" variant="primary">
-                    Create Board
-                  </Button>
-                  {error && <span className="err">{error}</span>}
-                </form>
-              </NavDropdown>
+              !disableAdding && (
+                <NavDropdown
+                  title="Create Board"
+                  id="navbarScrollingDropdown"
+                  className="create"
+                  onClick={() => setShow(false)}
+                >
+                  <form className="container" onSubmit={addBoard}>
+                    <h2>Board</h2>
+                    <div className="input-wrapper">
+                      <label htmlFor="">Board title *</label>
+                      <input ref={boardTitle} type="text" required autoFocus />
+                    </div>
+                    <Button type="submit" variant="primary">
+                      Create Board
+                    </Button>
+                    {error && <span className="err">{error}</span>}
+                  </form>
+                </NavDropdown>
+              )
             )}
           </Nav>
           <Form className="d-flex">

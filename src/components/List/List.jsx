@@ -11,8 +11,9 @@ import Dropdown from "react-bootstrap/Dropdown";
 import "./list.css";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import DropArea from "../DropArea/DropArea";
 
-function List({ list, setboard, boardId, board, setShow }) {
+function List({ list, setboard, boardId, board, setShow, onDrop, setpostion }) {
   const [showCardList, setshowCardList] = useState(false);
   const [error, seterror] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -179,15 +180,21 @@ function List({ list, setboard, boardId, board, setShow }) {
         </Dropdown>
       </div>
       <div className="wrapper">
-        {list.cards_of_the_list.map((card) => (
-          <Card
-            key={card.id}
-            card={card}
-            listId={list.id}
-            onCardDelete={handleCardDelete}
-            board={board}
-            setShow={setShow}
-          />
+        <DropArea newList={list.id} onDrop={onDrop} place={1} />
+        {list.cards_of_the_list.map((card, i) => (
+          <>
+            <Card
+              index={i}
+              key={card.id}
+              card={card}
+              listId={list.id}
+              onCardDelete={handleCardDelete}
+              board={board}
+              setShow={setShow}
+              setpostion={setpostion}
+            />
+            <DropArea newList={list.id} onDrop={onDrop} place={i + 2} />
+          </>
         ))}
       </div>
       <Dropdown className="addList addListCard">

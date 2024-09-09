@@ -1,4 +1,3 @@
-import React from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { Link, useNavigate } from "react-router-dom";
@@ -108,7 +107,7 @@ function Register() {
                   "sign up"
                 )}
               </Button>
-              <Link to="/login">Log in</Link>
+              {/* <Link to="/login">Log in</Link> */}
             </Form>
           )}
         </Formik>

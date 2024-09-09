@@ -12,19 +12,18 @@ import en from "javascript-time-ago/locale/en";
 
 TimeAgo.addDefaultLocale(en);
 
-import "./Archeives.css";
+import "./AllMembers.css";
+import "../archives/Archeives.css";
 
 import Cookies from "js-cookie";
 import { useParams } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 import api from "../../apiAuth/auth";
 
-function Archeives() {
+function AllMembers() {
   const [show, setShow] = useState(true);
-  const [archeivedCard, setarcheivedCard] = useState([]);
+  const [users, setusers] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const timeAgo = new TimeAgo("en-US");
 
   const { boardID } = useParams();
 
@@ -33,11 +32,10 @@ function Archeives() {
     const getWorkSpace = async () => {
       try {
         const { data } = await api({
-          url: `boards/get-archived-cards/${boardID}`,
-          // Authorization: `Bearer ${cookies?.token}`,
+          url: `users/get-users`,
           headers: { Authorization: `Bearer ${cookies}` },
         });
-        setarcheivedCard(data.data);
+        setusers(data.data);
         setLoading(false);
       } catch (err) {
         setLoading(false);
@@ -47,6 +45,22 @@ function Archeives() {
     getWorkSpace();
   }, [boardID]);
 
+  const deleteUser = async (id) => {
+    if (confirm("Are you sure you want to delete this User")) {
+      try {
+        const { data } = await api({
+          url: `users/destroy/${id}`,
+          headers: { Authorization: `Bearer ${cookies}` },
+          method: "DELETE",
+        });
+        setusers((prev) => prev.filter((user) => user.id !== id));
+      } catch (err) {
+        setLoading(false);
+        console.log(err);
+      }
+    }
+  };
+
   useEffect(() => {
     if (!show) {
       document.querySelector(".views")?.classList.add("large");
@@ -54,34 +68,6 @@ function Archeives() {
       document.querySelector(".views")?.classList.remove("large");
     }
   }, [show]);
-
-  const handleArchivedUser = async (id, type) => {
-    if (type == "restore") {
-      try {
-        await api({
-          url: `boards/restore-archived-card/${id}`,
-          method: "POST",
-          headers: { Authorization: `Bearer ${cookies}` },
-        });
-        setarcheivedCard(archeivedCard.filter((card) => card.id !== id));
-        alert("Card successfully restore to the board");
-      } catch (err) {
-        console.error("API error:", err);
-      }
-    } else {
-      try {
-        await api({
-          url: `boards/delete-archived-card/${id}`,
-          method: "POST",
-          headers: { Authorization: `Bearer ${cookies}` },
-        });
-        setarcheivedCard(archeivedCard.filter((card) => card.id !== id));
-        alert("Card successfully deleted from the board permanently");
-      } catch (err) {
-        console.error("API error:", err);
-      }
-    }
-  };
 
   if (loading) {
     return (
@@ -104,20 +90,18 @@ function Archeives() {
             <table>
               <thead>
                 <tr>
-                  <th>Card No.</th>
-                  <th>Card Title</th>
-                  <th>Date</th>
-                  <th>Who Deleted The card</th>
+                  <th>User No.</th>
+                  <th>User Name</th>
+                  <th>Email</th>
                   <th> Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {archeivedCard.map((card, i) => (
+                {users.map((user, i) => (
                   <tr key={i}>
-                    <td>{i}</td>
-                    <td>{card.text}</td>
-                    <td>{new Date(card.created_at).toLocaleString()}</td>
-                    <td>{card.user_name}</td>
+                    <td>{i + 1}</td>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
                     <td>
                       <img
                         style={{
@@ -128,9 +112,9 @@ function Archeives() {
                         }}
                         src={deletePer}
                         alt=""
-                        onClick={() => handleArchivedUser(card.id, "delete")}
+                        onClick={() => deleteUser(user.id)}
                       />
-                      <img
+                      {/* <img
                         style={{
                           marginInline: "5px",
                           width: "25px",
@@ -140,7 +124,7 @@ function Archeives() {
                         src={restore}
                         alt=""
                         onClick={() => handleArchivedUser(card.id, "restore")}
-                      />
+                      /> */}
                     </td>
                   </tr>
                 ))}
@@ -153,4 +137,4 @@ function Archeives() {
   );
 }
 
-export default Archeives;
+export default AllMembers;

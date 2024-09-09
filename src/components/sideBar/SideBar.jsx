@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Offcanvas from "react-bootstrap/Offcanvas";
 
@@ -8,15 +8,19 @@ import group from "../../../public/group.svg";
 import table from "../../../public/table.svg";
 import date from "../../../public/date.svg";
 import removedUsers from "../../../public/removedUsers.svg";
+import addMember from "../../../public/addUSer.svg";
 
 import "./SideBar.css";
 import { Link, useParams } from "react-router-dom";
 import api from "../../apiAuth/auth";
 import Spinner from "react-bootstrap/esm/Spinner";
+import { AuthContext } from "../context/Auth";
 
 function SideBar({ show, setShow }) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const { user } = useContext(AuthContext);
 
   const [loading, setLoading] = useState(true);
   const [workSpace, setworkSpace] = useState(null);
@@ -89,10 +93,7 @@ function SideBar({ show, setShow }) {
       <Offcanvas show={show} onHide={handleClose}>
         <Offcanvas.Header closeButton>
           {workSpace ? (
-            <Offcanvas.Title>
-              <img src="/photo-1675981004510-4ec798f42006.jpg" alt="" />
-              {workSpace.name}
-            </Offcanvas.Title>
+            <Offcanvas.Title>{workSpace.name} Workspace</Offcanvas.Title>
           ) : (
             <img
               src="/logo.gif"
@@ -119,7 +120,7 @@ function SideBar({ show, setShow }) {
             >
               <img src={group} alt="" />
 
-              <span>Members</span>
+              <span>{boardId ? "Board" : "Workspace"} Members</span>
             </a>
           )}
           {showUsers && (
@@ -137,14 +138,22 @@ function SideBar({ show, setShow }) {
               )}
             </div>
           )}
-          <a href="#" className="board-item">
-            <img src={table} alt="" />
-            <span>Table</span>
-          </a>
+          {user?.super_admin ? (
+            <Link to="/allMembers" className="board-item">
+              <img src={table} alt="" />
+              <span>All Members</span>
+            </Link>
+          ) : null}
           <a href="#" className="board-item">
             <img src={date} alt="" />
             <span>Calender</span>
           </a>
+          {user?.super_admin ? (
+            <Link to="/register" className="board-item">
+              <img src={addMember} alt="" />
+              <span>Add Member</span>
+            </Link>
+          ) : null}
           {workspaceId && boardId && (
             <Link to={`/archeivedCards/${boardId}`} className="board-item">
               <img src={removedUsers} alt="" />
@@ -161,8 +170,8 @@ function SideBar({ show, setShow }) {
               >
                 <img
                   src={
-                    board.board_background
-                      ? `https://back.alyoumsa.com/public/storage/${board.board_background}`
+                    board.photo
+                      ? `https://back.alyoumsa.com/public/storage/${board.photo}`
                       : "/photo-1675981004510-4ec798f42006.jpg"
                   }
                   alt=""
