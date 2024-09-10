@@ -49,9 +49,9 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: (
-      // <ProtectedAdminRoute>
-      <Register />
-      // </ProtectedAdminRoute>
+      <ProtectedAdminRoute>
+        <Register />
+      </ProtectedAdminRoute>
     ),
   },
   {

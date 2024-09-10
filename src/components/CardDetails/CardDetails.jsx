@@ -80,6 +80,9 @@ function CardDetails({
 
   const { user } = useContext(AuthContext);
 
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileURL, setFileURL] = useState(null);
+
   const [activeMovinglist, setactiveMovinglist] = useState(
     board.lists_of_the_board[0].id
   );
@@ -145,6 +148,11 @@ function CardDetails({
   const handleCoverUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
+
+    setSelectedFile(file);
+    console.log(file);
+    const url = URL.createObjectURL(file);
+    setFileURL(url);
 
     const formData = new FormData();
     formData.append("photo", file);
@@ -619,13 +627,42 @@ function CardDetails({
                   ))}
                 </div>
                 <div style={{ margin: "25px" }}>
-                  {cardDetails.photo && (
+                  {fileURL && selectedFile.type.includes("image") ? (
                     <div className="cover-image">
                       <ModalImage
-                        small={`https://back.alyoumsa.com/public/${cardDetails.photo}`}
-                        large={`https://back.alyoumsa.com/public/${cardDetails.photo}`}
+                        small={fileURL}
+                        large={fileURL}
                         alt="cover Image"
                       />
+                    </div>
+                  ) : (
+                    cardDetails.photo && (
+                      <div className="cover-image">
+                        <ModalImage
+                          small={`https://back.alyoumsa.com/public/${cardDetails.photo}`}
+                          large={`https://back.alyoumsa.com/public/${cardDetails.photo}`}
+                          alt="cover Image"
+                        />
+                      </div>
+                    )
+                  )}
+                  {fileURL && selectedFile.type === "application/pdf" && (
+                    <div>
+                      <h3>PDF Preview:</h3>
+                      <embed
+                        src={fileURL}
+                        type="application/pdf"
+                        width="500"
+                        height="600"
+                      />
+                    </div>
+                  )}
+                  {fileURL && selectedFile.name.endsWith(".rar") && (
+                    <div>
+                      <h3>RAR File:</h3>
+                      <a href={fileURL} download={selectedFile.name}>
+                        Download {selectedFile.name}
+                      </a>
                     </div>
                   )}
                 </div>
