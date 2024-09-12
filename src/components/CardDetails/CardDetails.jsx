@@ -6,6 +6,12 @@ import deleteCover from "../../../public/deleteCover.svg";
 import move from "../../../public/move.svg";
 import copy from "../../../public/copy.svg";
 
+import Popup from "reactjs-popup";
+import "reactjs-popup/dist/index.css";
+
+import { Worker, Viewer } from "@react-pdf-viewer/core";
+import "@react-pdf-viewer/core/lib/styles/index.css";
+
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 
@@ -66,6 +72,8 @@ function CardDetails({
   setcardDetails,
   cardDetails,
   board,
+  files,
+  setSelectedFile,
 }) {
   const toolbarOptions = [
     ["bold", "italic"],
@@ -80,8 +88,7 @@ function CardDetails({
 
   const { user } = useContext(AuthContext);
 
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [fileURL, setFileURL] = useState(null);
+  const [fileURL, setFileURL] = useState([]);
 
   const [activeMovinglist, setactiveMovinglist] = useState(
     board.lists_of_the_board[0].id
@@ -145,41 +152,30 @@ function CardDetails({
     }
   };
 
+  console.log(files);
   const handleCoverUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    setSelectedFile(file);
-    console.log(file);
-    const url = URL.createObjectURL(file);
-    setFileURL(url);
-
-    const formData = new FormData();
-    formData.append("photo", file);
+    let uploadedfiles = event.target.files;
+    if (!uploadedfiles) return;
+    setSelectedFile(
+      Array.from(uploadedfiles).map((file) => {
+        return {
+          type: file.type,
+          name: file.name,
+          file_path: URL.createObjectURL(file),
+        };
+      })
+    );
 
     try {
       const response = await api({
-        url: `/cards/upload-photo/${cardDetails.id}`,
+        url: `/cards/store-files`,
         method: "POST",
         headers: {
           Authorization: `Bearer ${cookies}`,
           "Content-Type": "multipart/form-data",
         },
-        data: formData,
+        data: { files: uploadedfiles, card_id: cardDetails.id },
       });
-
-      if (response.status === 200) {
-        setcardDetails((prev) => ({
-          ...prev,
-          photo: response.data.photo_url,
-        }));
-      } else {
-        console.error("Failed to upload cover image. Status:", response.status);
-        console.error("Response data:", response.data);
-        alert(
-          "Failed to upload cover image. Please check the console for details."
-        );
-      }
     } catch (error) {
       console.error(
         "Error uploading cover image:",
@@ -380,9 +376,9 @@ function CardDetails({
 
   const handleRemovePhoto = async () => {
     try {
-      const url = `/cards/delete-photo/${cardDetails.id}`;
+      const url = `/cards/delete-file/${cardDetails.id}`;
       const response = await api(url, {
-        method: "DELETE",
+        method: "POST",
         headers: {
           Authorization: `Bearer ${cookies}`,
         },
@@ -589,13 +585,7 @@ function CardDetails({
                       autoFocus
                       placeholder="Write a comment…"
                     />
-                    {/* <textarea
-                      className="comment add-comment input"
-                      type="text"
-                      data-testid="card-back-new-comment-input-skeleton"
-                      aria-placeholder="Write a comment…"
-                      aria-label="Write a comment"
-                    ></textarea> */}
+
                     <div
                       className="wrapper"
                       style={{ flexDirection: "row", margin: "16px 0" }}
@@ -626,45 +616,100 @@ function CardDetails({
                     </div>
                   ))}
                 </div>
-                <div style={{ margin: "25px" }}>
-                  {fileURL && selectedFile.type.includes("image") ? (
-                    <div className="cover-image">
-                      <ModalImage
-                        small={fileURL}
-                        large={fileURL}
-                        alt="cover Image"
-                      />
-                    </div>
-                  ) : (
-                    cardDetails.photo && (
-                      <div className="cover-image">
-                        <ModalImage
-                          small={`https://back.alyoumsa.com/public/${cardDetails.photo}`}
-                          large={`https://back.alyoumsa.com/public/${cardDetails.photo}`}
-                          alt="cover Image"
-                        />
-                      </div>
-                    )
-                  )}
-                  {fileURL && selectedFile.type === "application/pdf" && (
-                    <div>
-                      <h3>PDF Preview:</h3>
-                      <embed
-                        src={fileURL}
-                        type="application/pdf"
-                        width="500"
-                        height="600"
-                      />
-                    </div>
-                  )}
-                  {fileURL && selectedFile.name.endsWith(".rar") && (
-                    <div>
-                      <h3>RAR File:</h3>
-                      <a href={fileURL} download={selectedFile.name}>
-                        Download {selectedFile.name}
-                      </a>
-                    </div>
-                  )}
+                <div
+                  style={{
+                    margin: "25px",
+                    color: "#959b99",
+                    paddingRight: "24px",
+                    cursor: "pointer",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  {files.map((file) => {
+                    if (
+                      file.type === "application/pdf" ||
+                      file.file_path.includes("pdf")
+                    ) {
+                      return (
+                        <Popup
+                          trigger={<div> {file.name || file.file_path} </div>}
+                          position="right center"
+                        >
+                          <Worker
+                            workerUrl={`https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js`}
+                          >
+                            <Viewer
+                              fileUrl={
+                                !file.type
+                                  ? `https://back.alyoumsa.com/public/storage/${file.file_path}`
+                                  : file.file_path
+                              }
+                            />
+                          </Worker>
+                        </Popup>
+                      );
+                    } else if (
+                      file?.type?.startsWith("image/") ||
+                      file.file_path.includes(".jpg") ||
+                      file.file_path.includes(".webp") ||
+                      file.file_path.includes(".gif") ||
+                      file.file_path.includes(".svg")
+                    ) {
+                      return (
+                        <div className="cover-image">
+                          <ModalImage
+                            small={
+                              !file.type
+                                ? `https://back.alyoumsa.com/public/storage/${file.file_path}`
+                                : file.file_path
+                            }
+                            large={
+                              !file.type
+                                ? `https://back.alyoumsa.com/public/storage/${file.file_path}`
+                                : file.file_path
+                            }
+                            alt="cover Image"
+                          />
+                        </div>
+                      );
+                    } else if (
+                      file.file_path.includes(".mp4") ||
+                      file.type?.startsWith("video/")
+                    ) {
+                      return (
+                        <div className="cover-image">
+                          <video
+                            controls
+                            src={
+                              !file.type
+                                ? `https://back.alyoumsa.com/public/storage/${file.file_path}`
+                                : file.file_path
+                            }
+                            style={{ width: "300px" }}
+                          />
+                        </div>
+                      );
+                    } else if (
+                      file.file_path.includes(".zip") ||
+                      file.type == "application/x-zip-compressed"
+                    ) {
+                      return (
+                        <div>
+                          <a
+                            href={
+                              !file.type
+                                ? `https://back.alyoumsa.com/public/storage/${file.file_path}`
+                                : file.file_path
+                            }
+                            download={file.name}
+                          >
+                            Download {file.name}
+                          </a>
+                        </div>
+                      );
+                    }
+                  })}
                 </div>
               </div>
             </div>
@@ -673,10 +718,11 @@ function CardDetails({
               <input
                 type="file"
                 id="uploadCover"
+                multiple
                 onChange={handleCoverUpload}
                 style={{ display: "none" }}
               />
-              {cardDetails.photo && (
+              {files && (
                 <div className="item" onClick={handleRemovePhoto}>
                   <img src={deleteCover} alt="Cover" />
                   Remove Attachnent
@@ -689,7 +735,7 @@ function CardDetails({
                   style={{ width: "100%", cursor: "pointer" }}
                 >
                   <img src={attach} alt="Cover" />
-                  Attachment
+                  Update Attachment
                 </label>
               </div>
 

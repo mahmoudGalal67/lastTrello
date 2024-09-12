@@ -16,6 +16,8 @@ function Card({
 }) {
   const [open, setOpen] = useState(false);
 
+  const [selectedFile, setSelectedFile] = useState([]);
+
   const cookies = Cookies.get("token");
 
   const onOpenModal = () => {
@@ -39,6 +41,7 @@ function Card({
           headers: { Authorization: `Bearer ${cookies}` },
         });
         setcardDetails(data.data);
+        setSelectedFile(data.files);
       } catch (err) {
         console.log(err);
       }
@@ -73,6 +76,8 @@ function Card({
         setcardDetails={setcardDetails}
         onDeleteCard={handleDeleteCard}
         board={board}
+        files={selectedFile}
+        setSelectedFile={setSelectedFile}
       />
     </>
   );

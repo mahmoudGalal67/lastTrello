@@ -52,8 +52,6 @@ function Comment({ comment, user, cardId, setcardDetails }) {
     }
   };
 
-  console.log(comment.id);
-
   const deleteCommentRequest = async (id) => {
     if (confirm("Are you sure you want to proceed?")) {
       try {

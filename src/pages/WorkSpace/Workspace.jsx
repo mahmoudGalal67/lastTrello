@@ -357,8 +357,8 @@ function Workspace() {
                       <div className="card">
                         <img
                           src={
-                            board.board_background
-                              ? `https://back.alyoumsa.com/public/storage/${board.board_background}`
+                            board.photo
+                              ? `https://back.alyoumsa.com/public/storage/${board.photo}`
                               : "/photo-1675981004510-4ec798f42006.jpg"
                           }
                           alt=""

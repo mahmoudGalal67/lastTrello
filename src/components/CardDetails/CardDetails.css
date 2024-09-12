@@ -353,7 +353,14 @@
 
 .modal-body .cover-image,
 .list .item .cover-image {
-  height: 140px;
+  height: 260px;
+}
+.cover-image > div {
+  height: 100%;
+}
+
+.cover-image img {
+  height: 100%;
 }
 
 .remove-cover {
@@ -444,6 +451,27 @@
 
 .item .dropdown-item:hover {
   background-color: transparent;
+}
+
+.popup-content {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 80vw !important;
+  height: 80vh !important;
+  z-index: 100000000000 !important;
+  display: flex;
+  justify-content: center;
+  position: fixed;
+}
+
+.popup-content > div {
+  z-index: 100000000000 !important;
+}
+
+.popup-overlay {
+  z-index: 10000000000000 !important;
+  background-color: #101011d5 !important;
 }
 
 @media (max-width: 700px) {

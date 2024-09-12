@@ -28,8 +28,8 @@ function Register() {
   const handleRegister = async (values, { setSubmitting, setFieldError }) => {
     try {
       const response = await register(values);
-      toast.success("Registration successful!");
-      navigate("/login");
+      toast.success("Added new user successful!");
+      navigate("/");
     } catch (error) {
       setSubmitting(false);
       if (error.response && error.response.status === 422) {
@@ -51,7 +51,7 @@ function Register() {
         >
           {({ isSubmitting, handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
-              <h2>Sign up to continue</h2>
+              <h2>Add New USer</h2>
               <div className="mb-3">
                 <Field
                   type="text"
@@ -104,7 +104,7 @@ function Register() {
                     />
                   </>
                 ) : (
-                  "sign up"
+                  "Add"
                 )}
               </Button>
               {/* <Link to="/login">Log in</Link> */}
