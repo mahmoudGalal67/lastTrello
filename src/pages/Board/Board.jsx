@@ -5,6 +5,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "../../components/navbar/Navbar";
 import AddList from "../../components/addList/AddList";
 
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
@@ -50,69 +52,8 @@ function Board() {
     }
   }, [show]);
 
-  const onDrop = async (newList, place) => {
-    setboard((prev) => ({
-      ...prev,
-      lists_of_the_board: [
-        ...prev.lists_of_the_board.map((list, i) => {
-          if (list.id == newList && postion.prevList != newList) {
-            list.cards_of_the_list.splice(place - 1, 0, postion.card);
-            return {
-              ...list,
-              cards_of_the_list: list.cards_of_the_list,
-            };
-          } else if (
-            list.id == postion.prevList &&
-            postion.prevList != newList
-          ) {
-            return {
-              ...list,
-              cards_of_the_list: list.cards_of_the_list.filter(
-                (card) => card.id != postion.card.id
-              ),
-            };
-          } else if (
-            list.id == postion.prevList &&
-            postion.prevList == newList
-          ) {
-            const cards = list.cards_of_the_list.filter(
-              (card) => card.id != postion.card.id
-            );
-            cards.splice(
-              postion.index > place - 2 ? place - 1 : place - 2,
-              0,
-              postion.card
-            );
-            return {
-              ...list,
-              cards_of_the_list: cards,
-            };
-          } else {
-            return list;
-          }
-        }),
-      ],
-    }));
-
-    try {
-      const response = await api({
-        url: `cards/move-card/${postion.card.id}`,
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${cookies}`,
-          "Content-Type": "multipart/form-data",
-        },
-        data: {
-          the_list_id: newList,
-          position:
-            postion.index <= place - 2 && postion.prevList == newList
-              ? place - 1
-              : place,
-        },
-      });
-    } catch (err) {
-      console.log(err);
-    }
+  const handleDragAndDrop = (results) => {
+    console.log(results);
   };
 
   if (loading) {
@@ -138,26 +79,50 @@ function Board() {
       <Navbar setShow={setShow} />
       <SideBar show={show} setShow={setShow} />
       <div className="wrapper views">
-        <div className="board-options">
-          <span>{board.name}</span>
-        </div>
-        <div className="wrapper-lists">
-          {board.lists_of_the_board.map((list) => (
-            <List
-              key={list.id}
-              list={list}
-              boardId={Number(boardId)}
-              setboard={setboard}
-              board={board}
-              setShow={setShow}
-              onDrop={onDrop}
-              setpostion={setpostion}
-              position={postion}
-            />
-          ))}
+        <DragDropContext onDragEnd={handleDragAndDrop}>
+          <div className="board-options">
+            <span>{board.name}</span>
+          </div>
+          <Droppable droppableId="ROOT" type="group" direction="horizontal">
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                className="wrapper-lists"
+              >
+                {board.lists_of_the_board.map((list, index) => (
+                  <Draggable
+                    draggableId={list.id.toString()}
+                    index={index}
+                    key={list.id}
+                  >
+                    {(provided) => (
+                      <div
+                        {...provided.dragHandleProps}
+                        {...provided.draggableProps}
+                        ref={provided.innerRef}
+                      >
+                        <List
+                          list={list}
+                          boardId={Number(boardId)}
+                          setboard={setboard}
+                          board={board}
+                          setShow={setShow}
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
 
-          <AddList setShow={setShow} boardId={board.id} setboard={setboard} />
-        </div>
+                <AddList
+                  setShow={setShow}
+                  boardId={board.id}
+                  setboard={setboard}
+                />
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       </div>
     </div>
   );

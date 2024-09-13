@@ -11,9 +11,10 @@ import Dropdown from "react-bootstrap/Dropdown";
 import "./list.css";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import DropArea from "../DropArea/DropArea";
 
-function List({ list, setboard, boardId, board, setShow, onDrop, setpostion }) {
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+
+function List({ list, setboard, boardId, board, setShow }) {
   const [showCardList, setshowCardList] = useState(false);
   const [error, seterror] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -179,24 +180,43 @@ function List({ list, setboard, boardId, board, setShow, onDrop, setpostion }) {
           </Dropdown.Menu>
         </Dropdown>
       </div>
-      <div className="wrapper">
-        <DropArea newList={list.id} onDrop={onDrop} place={1} />
-        {list.cards_of_the_list.map((card, i) => (
-          <>
-            <Card
-              index={i}
-              key={card.id}
-              card={card}
-              listId={list.id}
-              onCardDelete={handleCardDelete}
-              board={board}
-              setShow={setShow}
-              setpostion={setpostion}
-            />
-            <DropArea newList={list.id} onDrop={onDrop} place={i + 2} />
-          </>
-        ))}
-      </div>
+
+      <Droppable droppableId={list.id.toString()}>
+        {(provided) => (
+          <div
+            className="wrapper"
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+          >
+            {list.cards_of_the_list.map((card, i) => (
+              <Draggable
+                draggableId={card.id.toString()}
+                index={i}
+                key={card.id}
+              >
+                {(provided) => (
+                  <div
+                    className="item-container"
+                    {...provided.dragHandleProps}
+                    {...provided.draggableProps}
+                    ref={provided.innerRef}
+                    style={{ width: "98%", margin: "6px 0" }}
+                  >
+                    <Card
+                      index={i}
+                      card={card}
+                      listId={list.id}
+                      onCardDelete={handleCardDelete}
+                      board={board}
+                      setShow={setShow}
+                    />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+          </div>
+        )}
+      </Droppable>
       <Dropdown className="addList addListCard">
         <Dropdown.Toggle className="addList addListCard" id="dropdown-basic">
           <img src="/plus.svg" alt="" />
@@ -232,29 +252,7 @@ function List({ list, setboard, boardId, board, setShow, onDrop, setpostion }) {
           </form>
         </Dropdown.Menu>
       </Dropdown>
-      {/* <img src="/plus.svg" alt="" />
-        <button type="text" onClick={() => setshowCardList(true)}>
-          Add a card
-        </button>
-        {showCardList && (
-          <div className="addListForm addListCard">
-            <form onSubmit={addCard}>
-              <input
-                ref={cardTitle}
-                type="text"
-                placeholder="Enter card title…"
-                required
-                autoFocus
-              />
-              <div>
-                <Button type="submit" variant="primary">
-                  Add card
-                </Button>
-                <CloseButton onClick={() => setshowCardList(false)} />
-              </div>
-            </form>
-          </div>
-        )} */}
+
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Edit List Name</Modal.Title>

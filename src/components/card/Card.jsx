@@ -5,15 +5,7 @@ import api from "../../apiAuth/auth";
 
 import Cookies from "js-cookie";
 
-function Card({
-  index,
-  card,
-  onCardDelete,
-  listId,
-  board,
-  setShow,
-  setpostion,
-}) {
+function Card({ card, onCardDelete, listId, board, setShow }) {
   const [open, setOpen] = useState(false);
 
   const [selectedFile, setSelectedFile] = useState([]);
@@ -51,13 +43,7 @@ function Card({
 
   return (
     <>
-      <div
-        draggable
-        className="item"
-        onClick={onOpenModal}
-        onDragStart={() => setpostion({ index, card, prevList: listId })}
-        onDragEnd={() => setpostion(null)}
-      >
+      <div className="item" onClick={onOpenModal}>
         {cardDetails?.color && (
           <div
             className="cover-image"

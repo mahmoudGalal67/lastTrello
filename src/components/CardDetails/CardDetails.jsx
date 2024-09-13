@@ -28,7 +28,7 @@ import "react-quill/dist/quill.snow.css";
 import { AuthContext } from "../context/Auth";
 
 import "./CardDetails.css";
-import { useEffect, useRef, useState, useContext } from "react";
+import { useRef, useState, useContext } from "react";
 
 import Cookies from "js-cookie";
 import api from "../../apiAuth/auth";
